@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Jarvis - Advanced Dashboard">
+    <title>Jarvis Central Dashboard</title>
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}?v=1">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=10">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Cinematic Boot Screen -->
+    <div id="boot-screen" class="boot-screen">
+        <div id="system-status" class="system-status">SYSTEM: OFFLINE</div>
+        <button id="init-btn" class="init-btn">INITIALIZE CORE</button>
+        
+        <!-- Biometric Scanner Professional HUD -->
+        <div id="biometric-scanner" class="biometric-scanner" style="display: none;">
+            <div class="hud-container">
+                <!-- Circular HUD Decor -->
+                <div class="hud-orbit outer"></div>
+                <div class="hud-orbit inner"></div>
+                
+                <div class="scan-frame">
+                    <div class="corner top-left"></div>
+                    <div class="corner top-right"></div>
+                    <div class="corner bottom-left"></div>
+                    <div class="corner bottom-right"></div>
+                    <div class="scan-line"></div>
+                    
+                    <!-- High-Fidelity SVG Wireframe -->
+                    <svg class="face-wireframe-pro" viewBox="0 0 200 200">
+                        <!-- Head Outline -->
+                        <path class="face-path" d="M100 20 C 60 20, 30 50, 30 100 C 30 160, 60 190, 100 190 C 140 190, 170 160, 170 100 C 170 50, 140 20, 100 20 Z" />
+                        <!-- Facial Features -->
+                        <path class="feature-line" d="M60 80 Q 80 70, 90 85 M110 85 Q 120 70, 140 80" /> <!-- Brows -->
+                        <path class="feature-line" d="M70 100 Q 80 95, 90 100 M110 100 Q 120 95, 130 100" /> <!-- Eyes -->
+                        <path class="feature-line" d="M100 110 L 100 140 L 90 145 M100 140 L 110 145" /> <!-- Nose -->
+                        <path class="feature-line" d="M75 160 Q 100 175, 125 160" /> <!-- Mouth -->
+                        
+                        <!-- Scanning Nodes -->
+                        <circle class="scan-node" cx="100" cy="60" r="1.5" />
+                        <circle class="scan-node" cx="50" cy="100" r="1.5" />
+                        <circle class="scan-node" cx="150" cy="100" r="1.5" />
+                        <circle class="scan-node" cx="80" cy="140" r="1.5" />
+                        <circle class="scan-node" cx="120" cy="140" r="1.5" />
+                    </svg>
+                </div>
+                
+                <!-- HUD Readouts (Centered & Cornered) -->
+                <div class="hud-data-panel tl">
+                    <div class="panel-tag">BIO.VER</div>
+                    <div class="panel-content">RETINAL: [MAP]</div>
+                </div>
+                <div class="hud-data-panel tr">
+                    <div class="panel-tag">SYS.AUTH</div>
+                    <div class="panel-content">ENCR_V: 256B</div>
+                </div>
+                <div class="hud-data-panel bl">
+                    <div class="panel-tag">GEO.LOC</div>
+                    <div class="panel-content" id="data-hex-1">0x0000</div>
+                </div>
+                <div class="hud-data-panel br">
+                    <div class="panel-tag">NET.PAR</div>
+                    <div class="panel-content" id="data-hex-2">0x0000</div>
+                </div>
+
+                <div class="scan-status-centered">
+                    <div class="status-main">AUTHENTICATING SUBJECT</div>
+                    <div class="status-sub"><span id="scan-percentage">0</span>%</div>
+                    <div class="progress-bar-hud"><div class="progress-fill-hud" id="scan-progress"></div></div>
+                </div>
+            </div>
+
+            <!-- Global Hacker Log Streams -->
+            <div class="hacker-log-sidebar left">
+                <div id="log-content-left" class="log-lines"></div>
+            </div>
+            <div class="hacker-log-sidebar right">
+                <div id="log-content-right" class="log-lines"></div>
+            </div>
+        </div>
+
+        <div class="boot-text" id="boot-text" style="display: none;">
+            <p id="boot-line-1"></p>
+            <p id="boot-line-2"></p>
+            <p id="boot-line-3"></p>
+            <p id="boot-line-4"></p>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard" id="main-ui" style="display: none; opacity: 0;">
+        <header class="top-nav">
+            <div class="logo">
+                <h1>J.A.R.V.I.S.</h1>
+                <span class="badge online">ONLINE</span>
+            </div>
+            <div class="header-data">
+                <div class="data-block">
+                    <span class="label">DATE/TIME</span>
+                    <span class="value" id="datetime-display">SYS.TIME</span>
+                </div>
+                <div class="data-block">
+                    <span class="label">HOST</span>
+                    <span class="value">LOCAL CORE</span>
+                </div>
+                <div class="data-block">
+                    <span class="label">VERSION</span>
+                    <span class="value">MK-IV</span>
+                </div>
+                <!-- New Settings Trigger -->
+                <button id="settings-btn" class="icon-btn settings-trigger" title="System Settings">⚙️</button>
+            </div>
+        </header>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>SYSTEM CONFIGURATION</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>Continuous Background Listening</label>
+                            <p>Enable automatic wake-word detection ("Jarvis") without manual trigger.</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="always-on-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>System Voice Response</label>
+                            <p>Enable/Disable Jarvis verbal feedback.</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked id="voice-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label>True Desktop Background Mode</label>
+                            <p>Jarvis listens even when the dashboard is closed (requires server).</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="desktop-mode-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main class="grid-container">
+            <!-- Left Panel: Telemetry -->
+            <aside class="panel telemetry-panel">
+                <div class="panel-header">SYSTEM TELEMETRY</div>
+                <div class="panel-body">
+                    <div class="stat-group">
+                        <label>CPU USAGE</label>
+                        <div class="progress-bar"><div class="fill cpu-fill" style="width: 34%"></div></div>
+                        <span class="stat-val stat-cpu">34%</span>
+                    </div>
+                    <div class="stat-group">
+                        <label>MEMORY ALLOC</label>
+                        <div class="progress-bar"><div class="fill mem-fill" style="width: 62%"></div></div>
+                        <span class="stat-val stat-mem">62%</span>
+                    </div>
+                    <div class="stat-group">
+                        <label>NETWORK I/O</label>
+                        <div class="progress-bar"><div class="fill net-fill" style="width: 15%"></div></div>
+                        <span class="stat-val stat-net">STABLE</span>
+                    </div>
+                    
+                    <div class="modules-section">
+                        <h4>ACTIVE MODULES</h4>
+                        <ul class="module-list">
+                            <li><span class="status-dot green"></span> Neural Net Processor</li>
+                            <li><span class="status-dot green"></span> Background Listener</li>
+                            <li><span class="status-dot green"></span> Omni-Search Engine</li>
+                            <li><span class="status-dot blue"></span> App Execution Pipeline</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="scan-visual">
+                        <div class="radar"></div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Panel: AI Core & Chat -->
+            <section class="panel center-panel">
+                <div class="orb-container">
+                    <div class="orb" id="orb">
+                        <div class="inner-orb"></div>
+                    </div>
+                    <div class="voice-wave" id="wave">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                </div>
+
+                <div class="chat-wrapper">
+                    <div id="chat-history" class="chat-history">
+                        <p class="bot-msg">Connection established. I am ready to assist you, sir.</p>
+                    </div>
+                    <div class="input-area">
+                        <input type="text" id="user-input" placeholder="Enter command or speak..." autocomplete="off">
+                        <button id="voice-btn" class="icon-btn" title="Voice Input">🎤</button>
+                        <button id="send-btn" class="icon-btn" title="Execute">🚀</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Logs -->
+            <aside class="panel log-panel">
+                <div class="panel-header">COMMAND LOGS</div>
+                <div class="panel-body">
+                    <ul id="system-logs" class="log-list">
+                        <li><span class="log-time">[BOOT]</span> Core systems initialized.</li>
+                        <li><span class="log-time">[AUTH]</span> User credentials accepted.</li>
+                        <li><span class="log-time">[NET]</span> API connection verified.</li>
+                    </ul>
+                </div>
+                <div class="ambient-glow"></div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Script to simulate dynamic data & handle clock -->
+    <script>
+        // Update clock
+        setInterval(() => {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
+            const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            document.getElementById('datetime-display').innerText = `${dateStr} ${timeStr}`;
+        }, 1000);
+
+        // Fluctuate telemetry occasionally
+        setInterval(() => {
+            const cpu = Math.floor(Math.random() * 20) + 10;
+            const mem = Math.floor(Math.random() * 10) + 50;
+            document.querySelector('.cpu-fill').style.width = cpu + '%';
+            document.querySelector('.stat-cpu').innerText = cpu + '%';
+            
+            document.querySelector('.mem-fill').style.width = mem + '%';
+            document.querySelector('.stat-mem').innerText = mem + '%';
+        }, 2500);
+    </script>
+    <script src="{% static 'js/main.js' %}?v=11"></script>
+</body>
+</html>

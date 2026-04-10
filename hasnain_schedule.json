@@ -1,0 +1,188 @@
+{
+  "owner": "Hasnain",
+  "wake_time": "06:00",
+  "sleep_time": "23:00",
+  "daily_routine": [
+    {
+      "id": 1,
+      "time": "06:00",
+      "duration_mins": 20,
+      "task": "Wake up & fresh",
+      "category": "personal",
+      "priority": "high",
+      "notes": "Wake up, brush teeth, wash face"
+    },
+    {
+      "id": 2,
+      "time": "06:20",
+      "duration_mins": 30,
+      "task": "Morning review",
+      "category": "planning",
+      "priority": "high",
+      "notes": "Plan today's day, check yesterday's tasks, recall your goals"
+    },
+    {
+      "id": 3,
+      "time": "06:50",
+      "duration_mins": 40,
+      "task": "Breakfast",
+      "category": "personal",
+      "priority": "medium",
+      "notes": "Eat a healthy breakfast, don't rush"
+    },
+    {
+      "id": 4,
+      "time": "07:30",
+      "duration_mins": 30,
+      "task": "Internship prep",
+      "category": "work",
+      "priority": "high",
+      "notes": "Prepare today's tasks, do code review, make notes"
+    },
+    {
+      "id": 5,
+      "time": "08:00",
+      "duration_mins": 60,
+      "task": "Commute / Travel",
+      "category": "travel",
+      "priority": "medium",
+      "notes": "Listen to a podcast or AI tutorial during the commute"
+    },
+    {
+      "id": 6,
+      "time": "09:00",
+      "duration_mins": 120,
+      "task": "Internship — deep work block 1",
+      "category": "work",
+      "priority": "critical",
+      "notes": "Best time of the morning — tackle hard tasks first, attend meetings"
+    },
+    {
+      "id": 7,
+      "time": "11:00",
+      "duration_mins": 30,
+      "task": "Short break + review",
+      "category": "break",
+      "priority": "medium",
+      "notes": "Tea, a short walk, check progress so far"
+    },
+    {
+      "id": 8,
+      "time": "11:30",
+      "duration_mins": 90,
+      "task": "Internship — deep work block 2",
+      "category": "work",
+      "priority": "critical",
+      "notes": "Build features, fix bugs, collaborate with the team"
+    },
+    {
+      "id": 9,
+      "time": "13:00",
+      "duration_mins": 60,
+      "task": "Lunch break",
+      "category": "personal",
+      "priority": "high",
+      "notes": "Eat lunch, take a short rest, avoid your phone"
+    },
+    {
+      "id": 10,
+      "time": "14:00",
+      "duration_mins": 120,
+      "task": "Internship — deep work block 3",
+      "category": "work",
+      "priority": "critical",
+      "notes": "Afternoon work — code review, documentation, testing"
+    },
+    {
+      "id": 11,
+      "time": "16:00",
+      "duration_mins": 60,
+      "task": "Internship — wrap up",
+      "category": "work",
+      "priority": "high",
+      "notes": "Summarize today's work, make notes for tomorrow, push commits"
+    },
+    {
+      "id": 12,
+      "time": "17:00",
+      "duration_mins": 60,
+      "task": "Exercise",
+      "category": "health",
+      "priority": "high",
+      "notes": "Gym, walk, or run — don't skip, it gives you energy"
+    },
+    {
+      "id": 13,
+      "time": "18:00",
+      "duration_mins": 120,
+      "task": "AI learning block",
+      "category": "learning",
+      "priority": "critical",
+      "notes": "Most important personal block of the day — improve Jarvis, learn AI"
+    },
+    {
+      "id": 14,
+      "time": "20:00",
+      "duration_mins": 30,
+      "task": "Dinner",
+      "category": "personal",
+      "priority": "high",
+      "notes": "Evening meal"
+    },
+    {
+      "id": 15,
+      "time": "20:30",
+      "duration_mins": 60,
+      "task": "Project / Jarvis work",
+      "category": "project",
+      "priority": "high",
+      "notes": "Add features to Jarvis, fix bugs, push to GitHub"
+    },
+    {
+      "id": 16,
+      "time": "21:30",
+      "duration_mins": 30,
+      "task": "Daily review + tomorrow plan",
+      "category": "planning",
+      "priority": "high",
+      "notes": "What did you learn today, what will you do tomorrow, journaling is optional"
+    },
+    {
+      "id": 17,
+      "time": "22:00",
+      "duration_mins": 60,
+      "task": "Wind down",
+      "category": "personal",
+      "priority": "medium",
+      "notes": "Relaxation — series, music, or light reading. Reduce screen time"
+    },
+    {
+      "id": 18,
+      "time": "23:00",
+      "duration_mins": 0,
+      "task": "Sleep",
+      "category": "personal",
+      "priority": "critical",
+      "notes": "7-8 hours of sleep is essential — keep your phone away"
+    }
+  ],
+  "custom_tasks": [],
+  "weekly_extras": {
+    "saturday": [
+      {
+        "time": "10:00",
+        "task": "Deep AI project session",
+        "duration_mins": 180,
+        "notes": "Big weekend session — seriously improve Jarvis"
+      }
+    ],
+    "sunday": [
+      {
+        "time": "10:00",
+        "task": "Weekly review + next week plan",
+        "duration_mins": 60,
+        "notes": "Full week review, check goals, plan for next week"
+      }
+    ]
+  }
+}

@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. AI Assistant Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: #000000;
+            color: #00f5ff;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background Effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 245, 255, 0.03) 2px,
+                    rgba(0, 245, 255, 0.03) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Scan Line Animation */
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00f5ff, transparent);
+            animation: scanLine 8s linear infinite;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        @keyframes scanLine {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+
+        /* Grid Layout */
+        .dashboard {
+            display: grid;
+            grid-template-rows: 60px 1fr;
+            height: 100vh;
+            position: relative;
+            z-index: 3;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            align-items: center;
+            padding: 0 20px;
+            background: linear-gradient(180deg, rgba(0, 245, 255, 0.1) 0%, transparent 100%);
+            border-bottom: 1px solid #00f5ff;
+        }
+
+        .logo-section {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 24px;
+            text-shadow: 0 0 20px #00f5ff;
+            letter-spacing: 2px;
+        }
+
+        .logo-section .tagline {
+            font-size: 10px;
+            color: #00d4ff;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .clock-section {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+
+        .digital-clock {
+            font-size: 32px;
+            text-shadow: 0 0 15px #00f5ff;
+            letter-spacing: 3px;
+        }
+
+        .date-display {
+            font-size: 12px;
+            color: #00d4ff;
+            margin-top: 2px;
+            letter-spacing: 1px;
+        }
+
+        .status-indicators {
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        .status-dot.online {
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .status-dot.secure {
+            background: #00f5ff;
+            box-shadow: 0 0 10px #00f5ff;
+        }
+
+        .status-dot.active {
+            background: #ff4500;
+            box-shadow: 0 0 10px #ff4500;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 20px;
+            padding: 20px;
+            height: calc(100vh - 60px);
+        }
+
+        /* Panel Styles */
+        .panel {
+            background: rgba(0, 245, 255, 0.05);
+            border: 1px solid #00f5ff;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00f5ff, transparent);
+            animation: panelGlow 3s linear infinite;
+        }
+
+        @keyframes panelGlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #00f5ff;
+        }
+
+        /* Left Panel - System Stats */
+        .system-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #00d4ff;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid #00f5ff;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00f5ff, #00d4ff);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px #00f5ff;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #00f5ff;
+            text-shadow: 0 0 5px #00f5ff;
+        }
+
+        /* Power Core Animation */
+        .power-core {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 150px;
+            position: relative;
+        }
+
+        .arc-reactor {
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+
+        .reactor-ring {
+            position: absolute;
+            border: 2px solid #00f5ff;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #00f5ff;
+        }
+
+        .reactor-ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            animation: rotate 4s linear infinite;
+        }
+
+        .reactor-ring:nth-child(2) {
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            animation: rotate 3s linear infinite reverse;
+        }
+
+        .reactor-ring:nth-child(3) {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            animation: rotate 2s linear infinite;
+        }
+
+        .reactor-core {
+            position: absolute;
+            width: 40%;
+            height: 40%;
+            top: 30%;
+            left: 30%;
+            background: radial-gradient(circle, #00f5ff, #00d4ff);
+            border-radius: 50%;
+            box-shadow: 0 0 30px #00f5ff;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        /* Center Panel */
+        .center-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .main-radar {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .radar-ring {
+            position: absolute;
+            border: 1px solid #00f5ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00f5ff;
+        }
+
+        .radar-ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            animation: radarRotate 10s linear infinite;
+        }
+
+        .radar-ring:nth-child(2) {
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            animation: radarRotate 8s linear infinite reverse;
+        }
+
+        .radar-ring:nth-child(3) {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            animation: radarRotate 6s linear infinite;
+        }
+
+        .radar-ring:nth-child(4) {
+            width: 40%;
+            height: 40%;
+            top: 30%;
+            left: 30%;
+            animation: radarRotate 4s linear infinite reverse;
+        }
+
+        @keyframes radarRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .radar-center {
+            position: absolute;
+            width: 20%;
+            height: 20%;
+            top: 40%;
+            left: 40%;
+            background: radial-gradient(circle, #00f5ff, #00d4ff);
+            border-radius: 50%;
+            box-shadow: 0 0 30px #00f5ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 10px;
+            text-align: center;
+            color: #000;
+            text-shadow: 0 0 5px #00f5ff;
+        }
+
+        /* Command Input */
+        .command-input-container {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .command-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 245, 255, 0.05);
+            border: 2px solid #00f5ff;
+            border-radius: 25px;
+            color: #00f5ff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+        }
+
+        .command-input::placeholder {
+            color: #00d4ff;
+            opacity: 0.7;
+        }
+
+        .command-input:focus {
+            border-color: #00d4ff;
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+            transform: scale(1.02);
+        }
+
+        /* Right Panel */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .quick-link {
+            padding: 12px;
+            background: rgba(0, 245, 255, 0.05);
+            border: 1px solid #00f5ff;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            color: #00f5ff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .quick-link:hover::before {
+            left: 100%;
+        }
+
+        .quick-link:hover {
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Recent Activity */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            padding: 8px;
+            background: rgba(0, 245, 255, 0.05);
+            border-left: 3px solid #00f5ff;
+            font-size: 12px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .activity-time {
+            color: #00d4ff;
+            font-size: 10px;
+        }
+
+        /* Voice Recognition Button */
+        .voice-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #00f5ff, #00d4ff);
+            border: 2px solid #00f5ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 30px;
+            color: #000;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+            z-index: 10;
+        }
+
+        .voice-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(0, 245, 255, 0.8);
+        }
+
+        .voice-button.listening {
+            animation: voicePulse 1s ease-in-out infinite;
+        }
+
+        @keyframes voicePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 250px 1fr 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+            }
+            
+            .top-bar {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .status-indicators {
+                justify-content: center;
+            }
+            
+            .quick-links {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 245, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00f5ff;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00d4ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="scan-line"></div>
+    
+    <div class="dashboard">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="logo-section">
+                J.A.R.V.I.S.
+                <div class="tagline">Just A Rather Very Intelligent System</div>
+            </div>
+            
+            <div class="clock-section">
+                <div class="digital-clock" id="digitalClock">00:00:00</div>
+                <div class="date-display" id="dateDisplay">Monday, January 1, 2024</div>
+            </div>
+            
+            <div class="status-indicators">
+                <div class="status-item">
+                    <div class="status-dot online"></div>
+                    <span>ONLINE</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot secure"></div>
+                    <span>SECURE</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot active"></div>
+                    <span>ACTIVE</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel -->
+            <div class="panel">
+                <div class="panel-title">System Statistics</div>
+                
+                <div class="system-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">CPU Usage</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="cpuProgress" style="width: 45%"></div>
+                        </div>
+                        <div class="stat-value" id="cpuValue">45%</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-label">RAM Usage</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="ramProgress" style="width: 62%"></div>
+                        </div>
+                        <div class="stat-value" id="ramValue">62%</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-label">SWAP Memory</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="swapProgress" style="width: 28%"></div>
+                        </div>
+                        <div class="stat-value" id="swapValue">28%</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-label">Power Level</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="powerProgress" style="width: 87%"></div>
+                        </div>
+                        <div class="stat-value" id="powerValue">87%</div>
+                    </div>
+                    
+                    <div class="power-core">
+                        <div class="arc-reactor">
+                            <div class="reactor-ring"></div>
+                            <div class="reactor-ring"></div>
+                            <div class="reactor-ring"></div>
+                            <div class="reactor-core"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Center Panel -->
+            <div class="panel center-panel">
+                <div class="main-radar">
+                    <div class="radar-ring"></div>
+                    <div class="radar-ring"></div>
+                    <div class="radar-ring"></div>
+                    <div class="radar-ring"></div>
+                    <div class="radar-center">
+                        <div class="status-text" id="aiStatus">SYSTEMS ONLINE</div>
+                    </div>
+                </div>
+                
+                <div class="command-input-container">
+                    <input type="text" class="command-input" id="commandInput" placeholder="Speak your command, Sir..." />
+                </div>
+            </div>
+            
+            <!-- Right Panel -->
+            <div class="panel">
+                <div class="panel-title">Quick Links</div>
+                
+                <div class="quick-links">
+                    <a href="https://google.com" target="_blank" class="quick-link">Google</a>
+                    <a href="https://youtube.com" target="_blank" class="quick-link">YouTube</a>
+                    <a href="https://github.com" target="_blank" class="quick-link">GitHub</a>
+                    <a href="https://stackoverflow.com" target="_blank" class="quick-link">Stack</a>
+                    <a href="https://linkedin.com" target="_blank" class="quick-link">LinkedIn</a>
+                    <a href="https://twitter.com" target="_blank" class="quick-link">Twitter</a>
+                    <a href="https://reddit.com" target="_blank" class="quick-link">Reddit</a>
+                    <a href="https://wikipedia.org" target="_blank" class="quick-link">Wikipedia</a>
+                </div>
+                
+                <div class="panel-title">Recent Activity</div>
+                <div class="activity-list" id="activityList">
+                    <div class="activity-item">
+                        <div>System initialized successfully</div>
+                        <div class="activity-time">Just now</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Voice Recognition Button -->
+    <div class="voice-button" id="voiceButton">🎤</div>
+    
+    <script>
+        // Clock functionality
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            document.getElementById('digitalClock').textContent = `${hours}:${minutes}:${seconds}`;
+            
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('dateDisplay').textContent = now.toLocaleDateString('en-US', options);
+        }
+        
+        // Update clock every second
+        setInterval(updateClock, 1000);
+        updateClock();
+        
+        // System stats animation
+        function animateStats() {
+            const stats = [
+                { id: 'cpu', min: 20, max: 80 },
+                { id: 'ram', min: 30, max: 90 },
+                { id: 'swap', min: 10, max: 50 },
+                { id: 'power', min: 70, max: 95 }
+            ];
+            
+            stats.forEach(stat => {
+                const randomValue = Math.floor(Math.random() * (stat.max - stat.min + 1)) + stat.min;
+                document.getElementById(`${stat.id}Progress`).style.width = `${randomValue}%`;
+                document.getElementById(`${stat.id}Value`).textContent = `${randomValue}%`;
+            });
+        }
+        
+        // Update stats every 3 seconds
+        setInterval(animateStats, 3000);
+        
+        // AI Status rotation
+        const statuses = ['SYSTEMS ONLINE', 'ANALYZING...', 'READY', 'MONITORING', 'STANDBY'];
+        let statusIndex = 0;
+        
+        function rotateStatus() {
+            statusIndex = (statusIndex + 1) % statuses.length;
+            document.getElementById('aiStatus').textContent = statuses[statusIndex];
+        }
+        
+        // Rotate status every 4 seconds
+        setInterval(rotateStatus, 4000);
+        
+        // Activity log
+        function addActivity(message) {
+            const activityList = document.getElementById('activityList');
+            const activityItem = document.createElement('div');
+            activityItem.className = 'activity-item';
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            
+            activityItem.innerHTML = `
+                <div>${message}</div>
+                <div class="activity-time">${timeString}</div>
+            `;
+            
+            activityList.insertBefore(activityItem, activityList.firstChild);
+            
+            // Keep only last 10 activities
+            while (activityList.children.length > 10) {
+                activityList.removeChild(activityList.lastChild);
+            }
+        }
+        
+        // Command input handling
+        const commandInput = document.getElementById('commandInput');
+        
+        commandInput.addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter') {
+                const command = commandInput.value.trim();
+                if (command) {
+                    await processCommand(command);
+                    commandInput.value = '';
+                }
+            }
+        });
+        
+        // Process command
+        async function processCommand(command) {
+            addActivity(`Command: ${command}`);
+            document.getElementById('aiStatus').textContent = 'PROCESSING...';
+            
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: command })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const responseText = data.response || data.message || 'Command processed successfully.';
+                    addActivity(`Jarvis: ${responseText}`);
+                    speakText(responseText);
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                const errorMsg = 'Command processing failed. Please try again.';
+                addActivity(`Error: ${errorMsg}`);
+                speakText(errorMsg);
+            }
+            
+            document.getElementById('aiStatus').textContent = 'READY';
+        }
+        
+        // Voice recognition
+        let recognition = null;
+        let isListening = false;
+        
+        function initializeVoiceRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (!SpeechRecognition) {
+                console.log('Speech recognition not supported');
+                return;
+            }
+            
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+            
+            recognition.onstart = () => {
+                isListening = true;
+                document.getElementById('voiceButton').classList.add('listening');
+                document.getElementById('aiStatus').textContent = 'LISTENING...';
+                addActivity('Voice recognition activated');
+            };
+            
+            recognition.onresult = (event) => {
+                const transcript = Array.from(event.results)
+                    .map(result => result[0].transcript)
+                    .join('');
+                
+                commandInput.value = transcript;
+                
+                if (event.results[0].isFinal) {
+                    setTimeout(() => {
+                        processCommand(transcript);
+                        commandInput.value = '';
+                    }, 1000);
+                }
+            };
+            
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                isListening = false;
+                document.getElementById('voiceButton').classList.remove('listening');
+                document.getElementById('aiStatus').textContent = 'ERROR';
+                addActivity(`Voice error: ${event.error}`);
+            };
+            
+            recognition.onend = () => {
+                isListening = false;
+                document.getElementById('voiceButton').classList.remove('listening');
+                document.getElementById('aiStatus').textContent = 'READY';
+            };
+        }
+        
+        // Voice button click handler
+        document.getElementById('voiceButton').addEventListener('click', () => {
+            if (!recognition) {
+                initializeVoiceRecognition();
+            }
+            
+            if (isListening) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        });
+        
+        // Text-to-speech
+        function speakText(text) {
+            const synthesis = window.speechSynthesis;
+            
+            if (!synthesis) {
+                console.log('Speech synthesis not supported');
+                return;
+            }
+            
+            synthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.9;
+            utterance.pitch = 0.8;
+            utterance.volume = 0.9;
+            utterance.lang = 'en-US';
+            
+            // Try to find a professional voice
+            const voices = synthesis.getVoices();
+            const professionalVoice = voices.find(voice => 
+                voice.name.includes('Male') || 
+                voice.name.includes('David') || 
+                voice.name.includes('Alex') ||
+                voice.name.includes('James')
+            ) || voices[0];
+            
+            if (professionalVoice) {
+                utterance.voice = professionalVoice;
+            }
+            
+            synthesis.speak(utterance);
+        }
+        
+        // Initialize voices
+        if (window.speechSynthesis) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                // Voices are loaded
+            };
+        }
+        
+        // Welcome message
+        setTimeout(() => {
+            addActivity('J.A.R.V.I.S. initialized successfully');
+            speakText('J.A.R.V.I.S. online and ready, sir. All systems operational.');
+        }, 1000);
+        
+        // Add some initial activities
+        setTimeout(() => {
+            addActivity('Security protocols engaged');
+        }, 2000);
+        
+        setTimeout(() => {
+            addActivity('Neural networks calibrated');
+        }, 3000);
+        
+        setTimeout(() => {
+            addActivity('Voice recognition system ready');
+        }, 4000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. - Professional Face Detection System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 107, 0, 0.05) 0%, transparent 70%),
+                linear-gradient(135deg, #000 0%, #0a0a0a 25%, #1a1a1a 50%, #0a0a0a 75%, #000 100%);
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Professional Grid Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0, 255, 255, 0.02) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.02) 2px, transparent 2px);
+            background-size: 40px 40px, 40px 40px, 120px 120px, 120px 120px;
+            animation: gridMove 30s linear infinite;
+            z-index: -2;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(120px, 120px); }
+        }
+
+        .container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Professional Header */
+        .header {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 20px 40px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(42, 42, 42, 0.85) 50%, rgba(26, 26, 26, 0.95) 100%);
+            border-bottom: 2px solid #ffd700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: 300;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            0% { 
+                filter: brightness(1) drop-shadow(0 0 20px rgba(255, 215, 0, 0.6)); 
+            }
+            100% { 
+                filter: brightness(1.2) drop-shadow(0 0 30px rgba(255, 107, 0, 0.8)); 
+            }
+        }
+
+        /* Iron Man Helmet Container */
+        .helmet-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Iron Man Helmet SVG */
+        .iron-man-helmet {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 5;
+            animation: helmetFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes helmetFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Face Detection Canvas */
+        #faceCanvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            height: 240px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            background: rgba(26, 26, 26, 0.8);
+            z-index: 3;
+            backdrop-filter: blur(10px);
+        }
+
+        #videoElement {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            height: 240px;
+            border-radius: 10px;
+            z-index: 2;
+            object-fit: cover;
+        }
+
+        /* Professional Status Display */
+        .status-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+
+        .status.error {
+            color: #ff6b00;
+            background: rgba(255, 107, 0, 0.1);
+            border-color: rgba(255, 107, 0, 0.5);
+            animation: errorShake 0.5s ease-in-out;
+        }
+
+        @keyframes errorShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Professional Biometric Panel */
+        .biometric-panel {
+            position: absolute;
+            top: 120px;
+            right: 20px;
+            background: rgba(26, 26, 26, 0.85);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 280px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .biometric-panel h3 {
+            color: #ffd700;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .biometric-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .biometric-label {
+            color: #888;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .biometric-value {
+            color: #00ff88;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        /* Professional Voice Controls */
+        .voice-controls {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .voice-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 107, 0, 0.2));
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            color: #ffd700;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .voice-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 107, 0, 0.3));
+        }
+
+        .voice-btn.active {
+            background: linear-gradient(135deg, rgba(255, 107, 0, 0.4), rgba(255, 0, 0, 0.3));
+            animation: voicePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes voicePulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(255, 107, 0, 0.6);
+            }
+        }
+
+        /* Face Detection Overlay */
+        .face-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            height: 240px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .face-detected {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+            animation: faceGlow 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes faceGlow {
+            0% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); }
+            100% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.8); }
+        }
+
+        /* Scanning Animation */
+        .scanning-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            animation: scan 2s linear infinite;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(240px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .helmet-container {
+                width: 300px;
+                height: 300px;
+            }
+            
+            #faceCanvas, #videoElement {
+                width: 240px;
+                height: 180px;
+            }
+            
+            .biometric-panel {
+                position: static;
+                margin-top: 20px;
+                max-width: 100%;
+            }
+            
+            .voice-controls {
+                bottom: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Professional Header -->
+        <div class="header">
+            <h1>J.A.R.V.I.S.</h1>
+        </div>
+
+        <!-- Iron Man Helmet with Face Detection -->
+        <div class="helmet-container">
+            <!-- Iron Man Helmet SVG -->
+            <svg class="iron-man-helmet" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                <!-- Helmet Base -->
+                <defs>
+                    <linearGradient id="helmetGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#ff6b00;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#ffd700;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="eyeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#ffffff;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                
+                <!-- Main Helmet Shape -->
+                <path d="M200 50 C250 50, 350 100, 350 200 C350 300, 250 350, 200 350 C150 350, 50 300, 50 200 C50 100, 150 50, 200 50 Z" 
+                      fill="url(#helmetGradient)" 
+                      stroke="#ffd700" 
+                      stroke-width="3" 
+                      opacity="0.9"/>
+                
+                <!-- Face Opening -->
+                <ellipse cx="200" cy="200" rx="120" ry="140" 
+                         fill="rgba(0,0,0,0.8)" 
+                         stroke="#ffd700" 
+                         stroke-width="2"/>
+                
+                <!-- Eyes -->
+                <rect x="120" y="180" width="60" height="40" rx="20" fill="url(#eyeGradient)" opacity="0.8"/>
+                <rect x="220" y="180" width="60" height="40" rx="20" fill="url(#eyeGradient)" opacity="0.8"/>
+                
+                <!-- Eye Glow -->
+                <ellipse cx="150" cy="200" rx="25" ry="15" fill="#00ffff" opacity="0.6"/>
+                <ellipse cx="250" cy="200" rx="25" ry="15" fill="#00ffff" opacity="0.6"/>
+                
+                <!-- Mouth Grille -->
+                <rect x="160" y="250" width="80" height="20" rx="5" 
+                      fill="none" 
+                      stroke="#ffd700" 
+                      stroke-width="2" 
+                      opacity="0.7"/>
+                <line x1="170" y1="250" x2="170" y2="270" stroke="#ffd700" stroke-width="1"/>
+                <line x1="180" y1="250" x2="180" y2="270" stroke="#ffd700" stroke-width="1"/>
+                <line x1="190" y1="250" x2="190" y2="270" stroke="#ffd700" stroke-width="1"/>
+                <line x1="200" y1="250" x2="200" y2="270" stroke="#ffd700" stroke-width="1"/>
+                <line x1="210" y1="250" x2="210" y2="270" stroke="#ffd700" stroke-width="1"/>
+                <line x1="220" y1="250" x2="220" y2="270" stroke="#ffd700" stroke-width="1"/>
+                <line x1="230" y1="250" x2="230" y2="270" stroke="#ffd700" stroke-width="1"/>
+                
+                <!-- Side Details -->
+                <circle cx="80" cy="200" r="15" fill="none" stroke="#ffd700" stroke-width="2" opacity="0.7"/>
+                <circle cx="320" cy="200" r="15" fill="none" stroke="#ffd700" stroke-width="2" opacity="0.7"/>
+                <circle cx="80" cy="200" r="8" fill="#ffd700" opacity="0.8"/>
+                <circle cx="320" cy="200" r="8" fill="#ffd700" opacity="0.8"/>
+            </svg>
+
+            <!-- Video Element for Face Detection -->
+            <video id="videoElement" autoplay muted></video>
+            
+            <!-- Canvas for Face Detection -->
+            <canvas id="faceCanvas"></canvas>
+            
+            <!-- Face Detection Overlay -->
+            <div class="face-overlay" id="faceOverlay">
+                <div class="scanning-line"></div>
+            </div>
+        </div>
+
+        <!-- Professional Biometric Panel -->
+        <div class="biometric-panel">
+            <h3>Biometric Analysis</h3>
+            <div class="biometric-item">
+                <span class="biometric-label">Face Detection</span>
+                <span class="biometric-value" id="faceStatus">Initializing</span>
+            </div>
+            <div class="biometric-item">
+                <span class="biometric-label">User Identity</span>
+                <span class="biometric-value" id="userIdentity">Unknown</span>
+            </div>
+            <div class="biometric-item">
+                <span class="biometric-label">Confidence</span>
+                <span class="biometric-value" id="confidence">--%</span>
+            </div>
+            <div class="biometric-item">
+                <span class="biometric-label">Heart Rate</span>
+                <span class="biometric-value" id="heartRate">-- bpm</span>
+            </div>
+            <div class="biometric-item">
+                <span class="biometric-label">Stress Level</span>
+                <span class="biometric-value" id="stressLevel">--</span>
+            </div>
+            <div class="biometric-item">
+                <span class="biometric-label">System Status</span>
+                <span class="biometric-value" id="systemStatus">Online</span>
+            </div>
+        </div>
+
+        <!-- Professional Voice Controls -->
+        <div class="voice-controls">
+            <button class="voice-btn" id="startFaceBtn">Start Face Scan</button>
+            <button class="voice-btn" id="voiceBtn">Voice Command</button>
+            <button class="voice-btn" id="testBtn">Test System</button>
+        </div>
+
+        <!-- Status Display -->
+        <div class="status-container">
+            <div class="status" id="status">Initializing J.A.R.V.I.S. Systems...</div>
+        </div>
+    </div>
+
+    <script>
+        let video = document.getElementById('videoElement');
+        let canvas = document.getElementById('faceCanvas');
+        let ctx = canvas.getContext('2d');
+        let faceDetectionActive = false;
+        let voiceRecognition = null;
+        let synthesis = window.speechSynthesis;
+        let isListening = false;
+
+        // Initialize system
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 J.A.R.V.I.S. Professional Face Detection System Loading...');
+            initializeSystem();
+        });
+
+        function initializeSystem() {
+            updateStatus('J.A.R.V.I.S. Online - Ready for Face Scan');
+            updateBiometric('systemStatus', 'Operational');
+            
+            // Initialize voice recognition
+            initializeVoiceRecognition();
+            
+            // Start biometric simulation
+            startBiometricSimulation();
+            
+            // Speak welcome message
+            speakText('J.A.R.V.I.S. online and ready, sir. Face detection system activated. Click Start Face Scan to begin biometric analysis.');
+        }
+
+        // Face Detection Functions
+        async function startFaceDetection() {
+            console.log('🎤 Starting Face Detection...');
+            updateStatus('Initializing Face Detection...');
+            updateBiometric('faceStatus', 'Scanning');
+            
+            try {
+                // Get user media
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: 320, 
+                        height: 240,
+                        facingMode: 'user'
+                    } 
+                });
+                
+                video.srcObject = stream;
+                faceDetectionActive = true;
+                
+                // Start face detection loop
+                detectFace();
+                
+                updateStatus('Face Detection Active');
+                updateBiometric('faceStatus', 'Active');
+                document.getElementById('startFaceBtn').classList.add('active');
+                
+                speakText('Face detection activated, sir. Please position your face within the scanning area.');
+                
+            } catch (error) {
+                console.error('❌ Face detection error:', error);
+                updateStatus('Face Detection Error', true);
+                updateBiometric('faceStatus', 'Error');
+                speakText('Apologies, sir. Face detection failed. Please ensure camera access is granted.');
+            }
+        }
+
+        function stopFaceDetection() {
+            console.log('🔇 Stopping Face Detection...');
+            faceDetectionActive = false;
+            
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            updateStatus('Face Detection Stopped');
+            updateBiometric('faceStatus', 'Inactive');
+            document.getElementById('startFaceBtn').classList.remove('active');
+            document.getElementById('faceOverlay').classList.remove('face-detected');
+        }
+
+        function detectFace() {
+            if (!faceDetectionActive) return;
+            
+            // Set canvas size
+            canvas.width = video.videoWidth || 320;
+            canvas.height = video.videoHeight || 240;
+            
+            // Draw video frame to canvas
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Simulate face detection (in real implementation, use face-api.js or similar)
+            simulateFaceDetection();
+            
+            // Continue detection loop
+            requestAnimationFrame(detectFace);
+        }
+
+        function simulateFaceDetection() {
+            // Simulate face detection with random confidence
+            const confidence = Math.floor(Math.random() * 30) + 70; // 70-100%
+            updateBiometric('confidence', confidence + '%');
+            
+            // Simulate face detection
+            if (confidence > 80) {
+                // Draw face detection box
+                ctx.strokeStyle = '#00ff88';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(80, 60, 160, 120);
+                
+                // Add face detection points
+                ctx.fillStyle = '#00ff88';
+                ctx.beginPath();
+                ctx.arc(120, 100, 3, 0, 2 * Math.PI);
+                ctx.arc(200, 100, 3, 0, 2 * Math.PI);
+                ctx.arc(160, 140, 3, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Update UI
+                updateBiometric('userIdentity', 'Hasnain');
+                updateBiometric('faceStatus', 'Detected');
+                document.getElementById('faceOverlay').classList.add('face-detected');
+                
+                if (confidence > 90) {
+                    speakText('Face recognized. Welcome back, sir.');
+                }
+            } else {
+                updateBiometric('userIdentity', 'Scanning...');
+                document.getElementById('faceOverlay').classList.remove('face-detected');
+            }
+        }
+
+        // Voice Recognition Functions
+        function initializeVoiceRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (!SpeechRecognition) {
+                console.error('❌ Speech recognition not supported');
+                return;
+            }
+
+            voiceRecognition = new SpeechRecognition();
+            voiceRecognition.continuous = false;
+            voiceRecognition.interimResults = true;
+            voiceRecognition.lang = 'en-US';
+
+            voiceRecognition.onstart = () => {
+                console.log('🎤 Voice recognition started');
+                isListening = true;
+                updateStatus('Voice Recognition Active');
+                document.getElementById('voiceBtn').classList.add('active');
+            };
+
+            voiceRecognition.onresult = (event) => {
+                const transcript = Array.from(event.results)
+                    .map(result => result[0].transcript)
+                    .join('');
+                
+                if (event.results[0].isFinal) {
+                    processVoiceCommand(transcript);
+                }
+            };
+
+            voiceRecognition.onerror = (event) => {
+                console.error('❌ Voice recognition error:', event.error);
+                isListening = false;
+                updateStatus('Voice Recognition Error', true);
+                document.getElementById('voiceBtn').classList.remove('active');
+            };
+
+            voiceRecognition.onend = () => {
+                console.log('🔇 Voice recognition ended');
+                isListening = false;
+                document.getElementById('voiceBtn').classList.remove('active');
+                updateStatus('Ready');
+            };
+        }
+
+        function toggleVoiceRecognition() {
+            if (!voiceRecognition) {
+                initializeVoiceRecognition();
+                return;
+            }
+
+            if (isListening) {
+                voiceRecognition.stop();
+            } else {
+                voiceRecognition.start();
+            }
+        }
+
+        async function processVoiceCommand(command) {
+            console.log('🧠 Processing voice command:', command);
+            updateStatus('Processing Command...');
+            
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: command })
+                });
+
+                const data = await response.json();
+                
+                updateStatus('Command Processed');
+                speakText(data.response);
+                
+            } catch (error) {
+                console.error('❌ Error processing command:', error);
+                updateStatus('Command Error', true);
+                speakText('Apologies, sir. Command processing failed.');
+            }
+        }
+
+        // Biometric Simulation
+        function startBiometricSimulation() {
+            setInterval(() => {
+                // Simulate heart rate
+                const heartRate = Math.floor(Math.random() * 20) + 70; // 70-90 bpm
+                updateBiometric('heartRate', heartRate + ' bpm');
+                
+                // Simulate stress level
+                const stressLevels = ['Low', 'Normal', 'Moderate', 'High'];
+                const stressLevel = stressLevels[Math.floor(Math.random() * stressLevels.length)];
+                updateBiometric('stressLevel', stressLevel);
+            }, 3000);
+        }
+
+        // UI Update Functions
+        function updateStatus(message, isError = false) {
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = message;
+            
+            if (isError) {
+                statusElement.classList.add('error');
+            } else {
+                statusElement.classList.remove('error');
+            }
+        }
+
+        function updateBiometric(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+
+        // Text-to-Speech
+        function speakText(text) {
+            if (!synthesis) return;
+
+            synthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.85;
+            utterance.pitch = 0.75;
+            utterance.volume = 0.9;
+            utterance.lang = 'en-US';
+            
+            // Try to find professional male voice
+            const voices = synthesis.getVoices();
+            const professionalVoice = voices.find(voice => 
+                voice.name.includes('Male') || 
+                voice.name.includes('David') || 
+                voice.name.includes('Alex') ||
+                voice.name.includes('James')
+            ) || voices[0];
+            
+            if (professionalVoice) {
+                utterance.voice = professionalVoice;
+            }
+            
+            synthesis.speak(utterance);
+        }
+
+        // Event Listeners
+        document.getElementById('startFaceBtn').addEventListener('click', () => {
+            if (faceDetectionActive) {
+                stopFaceDetection();
+            } else {
+                startFaceDetection();
+            }
+        });
+
+        document.getElementById('voiceBtn').addEventListener('click', () => {
+            toggleVoiceRecognition();
+        });
+
+        document.getElementById('testBtn').addEventListener('click', async () => {
+            updateStatus('Testing System...');
+            
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: 'JARVIS, system status check' })
+                });
+
+                const data = await response.json();
+                updateStatus('System Online');
+                speakText(data.response);
+                
+            } catch (error) {
+                console.error('❌ System test failed:', error);
+                updateStatus('System Test Failed', true);
+                speakText('Apologies, sir. System test failed. Please check server connection.');
+            }
+        });
+
+        // Handle window close
+        window.addEventListener('beforeunload', () => {
+            if (faceDetectionActive) {
+                stopFaceDetection();
+            }
+        });
+    </script>
+</body>
+</html>

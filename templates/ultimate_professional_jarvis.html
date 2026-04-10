@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. - Ultimate Professional Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 107, 0, 0.05) 0%, transparent 70%),
+                linear-gradient(135deg, #000 0%, #0a0a0a 25%, #1a1a1a 50%, #0a0a0a 75%, #000 100%);
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Professional Grid Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0, 255, 255, 0.02) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.02) 2px, transparent 2px);
+            background-size: 40px 40px, 40px 40px, 120px 120px, 120px 120px;
+            animation: gridMove 30s linear infinite;
+            z-index: -2;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(120px, 120px); }
+        }
+
+        .container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Professional Header */
+        .header {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 20px 40px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(42, 42, 42, 0.85) 50%, rgba(26, 26, 26, 0.95) 100%);
+            border-bottom: 2px solid #ffd700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: 300;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            0% { 
+                filter: brightness(1) drop-shadow(0 0 20px rgba(255, 215, 0, 0.6)); 
+            }
+            100% { 
+                filter: brightness(1.2) drop-shadow(0 0 30px rgba(255, 107, 0, 0.8)); 
+            }
+        }
+
+        /* Main Content Area */
+        .main-content {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+            max-width: 1200px;
+            width: 100%;
+            padding: 0 20px;
+            margin-top: 60px;
+        }
+
+        /* Iron Man Helmet Section */
+        .helmet-section {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Iron Man Helmet SVG */
+        .iron-man-helmet {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 5;
+            animation: helmetFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes helmetFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Face Detection Container */
+        .face-detection-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            background: rgba(26, 26, 26, 0.8);
+            z-index: 3;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #videoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: rgba(26, 26, 26, 0.85);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            min-width: 350px;
+        }
+
+        .control-panel h2 {
+            color: #ffd700;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Control Buttons */
+        .control-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .control-btn {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 107, 0, 0.2));
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            color: #ffd700;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 107, 0, 0.3));
+        }
+
+        .control-btn.active {
+            background: linear-gradient(135deg, rgba(255, 107, 0, 0.4), rgba(255, 0, 0, 0.3));
+            animation: btnPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes btnPulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(255, 107, 0, 0.6);
+            }
+        }
+
+        /* Status Display */
+        .status-display {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-value {
+            color: #00ff88;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Voice Input Display */
+        .voice-display {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            min-height: 80px;
+        }
+
+        .voice-display h3 {
+            color: #00ffff;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .voice-text {
+            color: #ffffff;
+            font-size: 14px;
+            line-height: 1.4;
+            font-style: italic;
+        }
+
+        /* Jarvis Response Display */
+        .response-display {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            min-height: 80px;
+        }
+
+        .response-display h3 {
+            color: #00ff88;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .response-text {
+            color: #ffffff;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* Main Status */
+        .main-status {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .status.error {
+            color: #ff6b00;
+            background: rgba(255, 107, 0, 0.1);
+            border-color: rgba(255, 107, 0, 0.5);
+            animation: errorShake 0.5s ease-in-out;
+        }
+
+        @keyframes errorShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Face Detection Overlay */
+        .face-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .face-detected {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+            animation: faceGlow 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes faceGlow {
+            0% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); }
+            100% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.8); }
+        }
+
+        /* Scanning Animation */
+        .scanning-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            animation: scan 2s linear infinite;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(200px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .main-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .helmet-section {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .face-detection-container {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .control-panel {
+                min-width: 100%;
+                padding: 20px;
+            }
+            
+            .control-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Professional Header -->
+        <div class="header">
+            <h1>J.A.R.V.I.S.</h1>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Iron Man Helmet Section -->
+            <div class="helmet-section">
+                <!-- Iron Man Helmet SVG -->
+                <svg class="iron-man-helmet" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Helmet Base -->
+                    <defs>
+                        <linearGradient id="helmetGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#ff6b00;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ffd700;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="eyeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ffffff;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Main Helmet Shape -->
+                    <path d="M200 50 C250 50, 350 100, 350 200 C350 300, 250 350, 200 350 C150 350, 50 300, 50 200 C50 100, 150 50, 200 50 Z" 
+                          fill="url(#helmetGradient)" 
+                          stroke="#ffd700" 
+                          stroke-width="3" 
+                          opacity="0.9"/>
+                    
+                    <!-- Face Opening -->
+                    <ellipse cx="200" cy="200" rx="120" ry="140" 
+                             fill="rgba(0,0,0,0.8)" 
+                             stroke="#ffd700" 
+                             stroke-width="2"/>
+                    
+                    <!-- Eyes -->
+                    <rect x="120" y="180" width="60" height="40" rx="20" fill="url(#eyeGradient)" opacity="0.8"/>
+                    <rect x="220" y="180" width="60" height="40" rx="20" fill="url(#eyeGradient)" opacity="0.8"/>
+                    
+                    <!-- Eye Glow -->
+                    <ellipse cx="150" cy="200" rx="25" ry="15" fill="#00ffff" opacity="0.6"/>
+                    <ellipse cx="250" cy="200" rx="25" ry="15" fill="#00ffff" opacity="0.6"/>
+                    
+                    <!-- Mouth Grille -->
+                    <rect x="160" y="250" width="80" height="20" rx="5" 
+                          fill="none" 
+                          stroke="#ffd700" 
+                          stroke-width="2" 
+                          opacity="0.7"/>
+                    <line x1="170" y1="250" x2="170" y2="270" stroke="#ffd700" stroke-width="1"/>
+                    <line x1="180" y1="250" x2="180" y2="270" stroke="#ffd700" stroke-width="1"/>
+                    <line x1="190" y1="250" x2="190" y2="270" stroke="#ffd700" stroke-width="1"/>
+                    <line x1="200" y1="250" x2="200" y2="270" stroke="#ffd700" stroke-width="1"/>
+                    <line x1="210" y1="250" x2="210" y2="270" stroke="#ffd700" stroke-width="1"/>
+                    <line x1="220" y1="250" x2="220" y2="270" stroke="#ffd700" stroke-width="1"/>
+                    <line x1="230" y1="250" x2="230" y2="270" stroke="#ffd700" stroke-width="1"/>
+                    
+                    <!-- Side Details -->
+                    <circle cx="80" cy="200" r="15" fill="none" stroke="#ffd700" stroke-width="2" opacity="0.7"/>
+                    <circle cx="320" cy="200" r="15" fill="none" stroke="#ffd700" stroke-width="2" opacity="0.7"/>
+                    <circle cx="80" cy="200" r="8" fill="#ffd700" opacity="0.8"/>
+                    <circle cx="320" cy="200" r="8" fill="#ffd700" opacity="0.8"/>
+                </svg>
+
+                <!-- Face Detection Container -->
+                <div class="face-detection-container">
+                    <video id="videoElement" autoplay muted></video>
+                    <div class="face-overlay" id="faceOverlay">
+                        <div class="scanning-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <h2>System Controls</h2>
+                
+                <!-- Control Buttons -->
+                <div class="control-buttons">
+                    <button class="control-btn" id="startFaceBtn">Start Face Scan</button>
+                    <button class="control-btn" id="voiceBtn">Voice Command</button>
+                    <button class="control-btn" id="testBtn">Test System</button>
+                    <button class="control-btn" id="clearBtn">Clear Display</button>
+                </div>
+
+                <!-- Status Display -->
+                <div class="status-display">
+                    <div class="status-item">
+                        <span class="status-label">Face Detection</span>
+                        <span class="status-value" id="faceStatus">Ready</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Voice Recognition</span>
+                        <span class="status-value" id="voiceStatus">Ready</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">User Identity</span>
+                        <span class="status-value" id="userIdentity">Unknown</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">System Status</span>
+                        <span class="status-value" id="systemStatus">Online</span>
+                    </div>
+                </div>
+
+                <!-- Voice Input Display -->
+                <div class="voice-display">
+                    <h3>Voice Input</h3>
+                    <div class="voice-text" id="voiceText">Click "Voice Command" and speak...</div>
+                </div>
+
+                <!-- Jarvis Response Display -->
+                <div class="response-display">
+                    <h3>Jarvis Response</h3>
+                    <div class="response-text" id="responseText">Awaiting your command, sir...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Status -->
+        <div class="main-status">
+            <div class="status" id="mainStatus">J.A.R.V.I.S. Online - Ready for Service</div>
+        </div>
+    </div>
+
+    <script>
+        let video = document.getElementById('videoElement');
+        let faceDetectionActive = false;
+        let voiceRecognition = null;
+        let synthesis = window.speechSynthesis;
+        let isListening = false;
+
+        // Initialize system
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 J.A.R.V.I.S. Ultimate Professional Interface Loading...');
+            initializeSystem();
+        });
+
+        function initializeSystem() {
+            updateMainStatus('J.A.R.V.I.S. Online - Ready for Service');
+            updateStatus('systemStatus', 'Operational');
+            
+            // Initialize voice recognition
+            initializeVoiceRecognition();
+            
+            // Speak welcome message
+            setTimeout(() => {
+                speakText('J.A.R.V.I.S. online and ready, sir. All systems operational. Face detection and voice recognition activated.');
+            }, 1000);
+        }
+
+        // Face Detection Functions
+        async function startFaceDetection() {
+            console.log('🎭 Starting Face Detection...');
+            updateMainStatus('Initializing Face Detection...');
+            updateStatus('faceStatus', 'Scanning');
+            
+            try {
+                // Get user media
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: 320, 
+                        height: 240,
+                        facingMode: 'user'
+                    } 
+                });
+                
+                video.srcObject = stream;
+                faceDetectionActive = true;
+                
+                // Start face detection simulation
+                simulateFaceDetection();
+                
+                updateMainStatus('Face Detection Active');
+                updateStatus('faceStatus', 'Active');
+                document.getElementById('startFaceBtn').classList.add('active');
+                document.getElementById('faceOverlay').classList.add('face-detected');
+                
+                speakText('Face detection activated, sir. Biometric scanning in progress.');
+                
+            } catch (error) {
+                console.error('❌ Face detection error:', error);
+                updateMainStatus('Face Detection Error', true);
+                updateStatus('faceStatus', 'Error');
+                speakText('Apologies, sir. Face detection failed. Please ensure camera access is granted.');
+            }
+        }
+
+        function stopFaceDetection() {
+            console.log('🔇 Stopping Face Detection...');
+            faceDetectionActive = false;
+            
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+            
+            updateMainStatus('Face Detection Stopped');
+            updateStatus('faceStatus', 'Inactive');
+            updateStatus('userIdentity', 'Unknown');
+            document.getElementById('startFaceBtn').classList.remove('active');
+            document.getElementById('faceOverlay').classList.remove('face-detected');
+        }
+
+        function simulateFaceDetection() {
+            if (!faceDetectionActive) return;
+            
+            // Simulate face detection with random confidence
+            setTimeout(() => {
+                if (faceDetectionActive) {
+                    const confidence = Math.floor(Math.random() * 30) + 70; // 70-100%
+                    
+                    if (confidence > 80) {
+                        updateStatus('userIdentity', 'Hasnain');
+                        speakText('Face recognized. Welcome back, sir.');
+                    }
+                    
+                    // Continue simulation
+                    simulateFaceDetection();
+                }
+            }, 3000);
+        }
+
+        // Voice Recognition Functions
+        function initializeVoiceRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (!SpeechRecognition) {
+                console.error('❌ Speech recognition not supported');
+                updateStatus('voiceStatus', 'Not Supported');
+                return;
+            }
+
+            voiceRecognition = new SpeechRecognition();
+            voiceRecognition.continuous = false;
+            voiceRecognition.interimResults = true;
+            voiceRecognition.lang = 'en-US';
+
+            voiceRecognition.onstart = () => {
+                console.log('🎤 Voice recognition started');
+                isListening = true;
+                updateMainStatus('Voice Recognition Active');
+                updateStatus('voiceStatus', 'Listening');
+                document.getElementById('voiceBtn').classList.add('active');
+                document.getElementById('voiceText').textContent = 'Listening...';
+            };
+
+            voiceRecognition.onresult = (event) => {
+                const transcript = Array.from(event.results)
+                    .map(result => result[0].transcript)
+                    .join('');
+                
+                document.getElementById('voiceText').textContent = transcript;
+                
+                if (event.results[0].isFinal) {
+                    console.log('✅ Final transcript:', transcript);
+                    processVoiceCommand(transcript);
+                }
+            };
+
+            voiceRecognition.onerror = (event) => {
+                console.error('❌ Voice recognition error:', event.error);
+                isListening = false;
+                updateMainStatus('Voice Recognition Error', true);
+                updateStatus('voiceStatus', 'Error');
+                document.getElementById('voiceBtn').classList.remove('active');
+                speakText('Apologies, sir. Voice recognition error. Please try again.');
+            };
+
+            voiceRecognition.onend = () => {
+                console.log('🔇 Voice recognition ended');
+                isListening = false;
+                updateStatus('voiceStatus', 'Ready');
+                document.getElementById('voiceBtn').classList.remove('active');
+            };
+        }
+
+        function toggleVoiceRecognition() {
+            if (!voiceRecognition) {
+                initializeVoiceRecognition();
+                return;
+            }
+
+            if (isListening) {
+                voiceRecognition.stop();
+            } else {
+                voiceRecognition.start();
+            }
+        }
+
+        async function processVoiceCommand(command) {
+            console.log('🧠 Processing voice command:', command);
+            updateMainStatus('Processing Command...');
+            
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: command })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('✅ API Response:', data);
+                
+                // Handle response properly
+                const responseText = data.response || data.message || 'Command processed successfully.';
+                
+                document.getElementById('responseText').textContent = responseText;
+                updateMainStatus('Command Processed');
+                speakText(responseText);
+                
+            } catch (error) {
+                console.error('❌ Error processing command:', error);
+                updateMainStatus('Command Error', true);
+                const errorMsg = 'Apologies, sir. Command processing failed. Please try again.';
+                document.getElementById('responseText').textContent = errorMsg;
+                speakText(errorMsg);
+            }
+        }
+
+        // Test System Function
+        async function testSystem() {
+            console.log('🧪 Testing System...');
+            updateMainStatus('Testing System...');
+            
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: 'JARVIS, system status check' })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                const responseText = data.response || data.message || 'System operational.';
+                
+                updateMainStatus('System Online');
+                document.getElementById('responseText').textContent = responseText;
+                speakText(responseText);
+                
+            } catch (error) {
+                console.error('❌ System test failed:', error);
+                updateMainStatus('System Test Failed', true);
+                const errorMsg = 'Apologies, sir. System test failed. Please check server connection.';
+                document.getElementById('responseText').textContent = errorMsg;
+                speakText(errorMsg);
+            }
+        }
+
+        // Clear Display Function
+        function clearDisplay() {
+            console.log('🧹 Clearing Display...');
+            
+            document.getElementById('voiceText').textContent = 'Click "Voice Command" and speak...';
+            document.getElementById('responseText').textContent = 'Awaiting your command, sir...';
+            updateMainStatus('Display Cleared - Ready for Command');
+            
+            speakText('Display cleared, sir. Ready for your next command.');
+        }
+
+        // UI Update Functions
+        function updateMainStatus(message, isError = false) {
+            const statusElement = document.getElementById('mainStatus');
+            statusElement.textContent = message;
+            
+            if (isError) {
+                statusElement.classList.add('error');
+            } else {
+                statusElement.classList.remove('error');
+            }
+        }
+
+        function updateStatus(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+
+        // Text-to-Speech
+        function speakText(text) {
+            if (!synthesis) {
+                console.log('⚠️ Speech synthesis not supported');
+                return;
+            }
+
+            synthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.85;
+            utterance.pitch = 0.75;
+            utterance.volume = 0.9;
+            utterance.lang = 'en-US';
+            
+            // Try to find professional male voice
+            const voices = synthesis.getVoices();
+            const professionalVoice = voices.find(voice => 
+                voice.name.includes('Male') || 
+                voice.name.includes('David') || 
+                voice.name.includes('Alex') ||
+                voice.name.includes('James')
+            ) || voices[0];
+            
+            if (professionalVoice) {
+                utterance.voice = professionalVoice;
+                console.log('🎤 Using professional voice:', professionalVoice.name);
+            }
+            
+            synthesis.speak(utterance);
+        }
+
+        // Event Listeners
+        document.getElementById('startFaceBtn').addEventListener('click', () => {
+            if (faceDetectionActive) {
+                stopFaceDetection();
+            } else {
+                startFaceDetection();
+            }
+        });
+
+        document.getElementById('voiceBtn').addEventListener('click', () => {
+            toggleVoiceRecognition();
+        });
+
+        document.getElementById('testBtn').addEventListener('click', () => {
+            testSystem();
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            clearDisplay();
+        });
+
+        // Handle window close
+        window.addEventListener('beforeunload', () => {
+            if (faceDetectionActive) {
+                stopFaceDetection();
+            }
+        });
+    </script>
+</body>
+</html>

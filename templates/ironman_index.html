@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS - Iron Man Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', 'Courier New', monospace;
+            background: #000;
+            color: #00ff00;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+        /* Iron Man Helmet Background */
+        .helmet-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #000 100%);
+            z-index: -2;
+        }
+
+        /* Animated Grid Background */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Main Container */
+        .jarvis-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Helmet Top Bar */
+        .helmet-top {
+            background: linear-gradient(90deg, #ff0000, #ff6600, #ff0000);
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            border-bottom: 3px solid #00ff00;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+        }
+
+        .jarvis-logo {
+            font-size: 36px;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            letter-spacing: 4px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 20px;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #00ff00;
+            box-shadow: 0 0 10px currentColor;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Main Interface */
+        .main-interface {
+            flex: 1;
+            display: flex;
+            position: relative;
+        }
+
+        /* Left Panel */
+        .left-panel {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            border-right: 2px solid #00ff00;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            color: #ff6600;
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .system-status {
+            margin-bottom: 30px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 3px solid #00ff00;
+        }
+
+        .status-value {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        /* Center Display */
+        .center-display {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .vision-display {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hud-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .hud-circle {
+            position: absolute;
+            border: 2px solid rgba(0, 255, 0, 0.3);
+            border-radius: 50%;
+            animation: rotate 10s linear infinite;
+        }
+
+        .hud-circle:nth-child(1) {
+            width: 600px;
+            height: 600px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hud-circle:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-direction: reverse;
+        }
+
+        .hud-circle:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes rotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Chat Display */
+        .chat-display {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 300px;
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 2px solid #00ff00;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #00ff00;
+            background: rgba(0, 255, 0, 0.05);
+            animation: messageSlide 0.3s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .message.user {
+            border-left-color: #ff6600;
+            background: rgba(255, 102, 0, 0.05);
+            text-align: right;
+        }
+
+        .message-content {
+            margin-bottom: 5px;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 20px;
+            border-top: 1px solid #00ff00;
+            display: flex;
+            gap: 10px;
+        }
+
+        .jarvis-input {
+            flex: 1;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 15px;
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .jarvis-input:focus {
+            background: rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .jarvis-input::placeholder {
+            color: rgba(0, 255, 0, 0.5);
+        }
+
+        .send-btn {
+            background: linear-gradient(45deg, #ff0000, #ff6600);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 102, 0, 0.8);
+        }
+
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Right Panel */
+        .right-panel {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            border-left: 2px solid #00ff00;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .schedule-display {
+            margin-bottom: 30px;
+        }
+
+        .schedule-item {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(255, 102, 0, 0.1);
+            border-left: 3px solid #ff6600;
+            font-size: 14px;
+        }
+
+        .schedule-time {
+            color: #ff6600;
+            font-weight: bold;
+        }
+
+        /* Voice Indicator */
+        .voice-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border: 3px solid #00ff00;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .voice-wave {
+            width: 30px;
+            height: 30px;
+            background: #00ff00;
+            border-radius: 50%;
+            animation: voicePulse 1.5s infinite;
+        }
+
+        @keyframes voicePulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 255, 0, 0.3);
+            border-top: 3px solid #00ff00;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .left-panel, .right-panel {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .left-panel, .right-panel {
+                display: none;
+            }
+            
+            .helmet-top {
+                height: 60px;
+                padding: 0 15px;
+            }
+            
+            .jarvis-logo {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="helmet-bg"></div>
+    <div class="grid-bg"></div>
+    
+    <div class="jarvis-container">
+        <!-- Helmet Top Bar -->
+        <div class="helmet-top">
+            <div class="jarvis-logo">J.A.R.V.I.S.</div>
+            <div class="status-indicators">
+                <div class="indicator" title="System Online"></div>
+                <div class="indicator" title="AI Active"></div>
+                <div class="indicator" title="Connected"></div>
+            </div>
+        </div>
+
+        <!-- Main Interface -->
+        <div class="main-interface">
+            <!-- Left Panel -->
+            <div class="left-panel">
+                <div class="system-status">
+                    <div class="panel-title">System Status</div>
+                    <div class="status-item">
+                        <span>Power</span>
+                        <span class="status-value">100%</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Core Temp</span>
+                        <span class="status-value">42°C</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Network</span>
+                        <span class="status-value">Online</span>
+                    </div>
+                    <div class="status-item">
+                        <span>AI Status</span>
+                        <span class="status-value">Active</span>
+                    </div>
+                </div>
+
+                <div class="schedule-display">
+                    <div class="panel-title">Current Task</div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">11:30</div>
+                        <div>Internship - Deep Work Block 2</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Display -->
+            <div class="center-display">
+                <div class="vision-display">
+                    <div class="hud-overlay">
+                        <div class="hud-circle"></div>
+                        <div class="hud-circle"></div>
+                        <div class="hud-circle"></div>
+                    </div>
+                    
+                    <!-- Voice Indicator -->
+                    <div class="voice-indicator">
+                        <div class="voice-wave"></div>
+                    </div>
+                </div>
+
+                <!-- Chat Display -->
+                <div class="chat-display">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message">
+                            <div class="message-content">Hello Sir. J.A.R.V.I.S. online and ready to assist you.</div>
+                            <div class="message-time">System</div>
+                        </div>
+                    </div>
+
+                    <div class="input-area">
+                        <input type="text" class="jarvis-input" id="jarvisInput" placeholder="Speak your command, sir..." />
+                        <button class="send-btn" id="sendBtn">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="right-panel">
+                <div class="schedule-display">
+                    <div class="panel-title">Today's Schedule</div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">06:00</div>
+                        <div>Wake up & fresh</div>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">06:20</div>
+                        <div>Morning review</div>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">09:00</div>
+                        <div>Internship - Deep Work</div>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">13:00</div>
+                        <div>Lunch break</div>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">18:00</div>
+                        <div>Exercise</div>
+                    </div>
+                </div>
+
+                <div class="system-status">
+                    <div class="panel-title">Analytics</div>
+                    <div class="status-item">
+                        <span>Tasks Today</span>
+                        <span class="status-value">18</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Completed</span>
+                        <span class="status-value">12</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Productivity</span>
+                        <span class="status-value">67%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class JarvisInterface {
+            constructor() {
+                this.chatMessages = document.getElementById('chatMessages');
+                this.jarvisInput = document.getElementById('jarvisInput');
+                this.sendBtn = document.getElementById('sendBtn');
+                this.voiceWave = document.querySelector('.voice-wave');
+                
+                this.init();
+            }
+
+            init() {
+                // Event listeners
+                this.sendBtn.addEventListener('click', () => this.sendMessage());
+                this.jarvisInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.sendMessage();
+                    }
+                });
+
+                // Voice recognition (if available)
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    this.initVoiceRecognition();
+                }
+
+                // Update system status periodically
+                this.updateSystemStatus();
+                setInterval(() => this.updateSystemStatus(), 5000);
+
+                // Animate voice wave
+                this.animateVoiceWave();
+            }
+
+            initVoiceRecognition() {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                this.recognition = new SpeechRecognition();
+                this.recognition.continuous = false;
+                this.recognition.interimResults = false;
+                this.recognition.lang = 'en-US';
+
+                this.recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    this.jarvisInput.value = transcript;
+                    this.sendMessage();
+                };
+
+                this.recognition.onerror = (event) => {
+                    console.error('Speech recognition error:', event.error);
+                };
+
+                // Add voice button
+                const voiceBtn = document.createElement('button');
+                voiceBtn.innerHTML = '🎤';
+                voiceBtn.className = 'send-btn';
+                voiceBtn.style.marginRight = '10px';
+                voiceBtn.addEventListener('click', () => {
+                    this.recognition.start();
+                    voiceBtn.innerHTML = '🔴';
+                    setTimeout(() => {
+                        voiceBtn.innerHTML = '🎤';
+                    }, 3000);
+                });
+                
+                this.jarvisInput.parentNode.insertBefore(voiceBtn, this.jarvisInput);
+            }
+
+            async sendMessage() {
+                const message = this.jarvisInput.value.trim();
+                if (!message) return;
+
+                // Add user message
+                this.addMessage(message, 'user');
+                
+                // Clear input
+                this.jarvisInput.value = '';
+
+                // Show loading
+                this.addMessage('Processing your request, sir...', 'jarvis', true);
+
+                try {
+                    const response = await fetch('/api/ask', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ prompt: message })
+                    });
+
+                    const data = await response.json();
+                    
+                    // Remove loading message
+                    this.removeLastMessage();
+                    
+                    // Add Jarvis response
+                    this.addMessage(data.response, 'jarvis');
+                    
+                    // Update schedule if needed
+                    if (message.toLowerCase().includes('schedule') || message.toLowerCase().includes('task')) {
+                        this.updateScheduleDisplay();
+                    }
+                    
+                } catch (error) {
+                    this.removeLastMessage();
+                    this.addMessage('Sorry sir, I encountered an error. Please try again.', 'jarvis');
+                }
+            }
+
+            addMessage(content, sender, isLoading = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                
+                if (isLoading) {
+                    content += ' <span class="loading"></span>';
+                }
+                
+                messageDiv.innerHTML = `
+                    <div class="message-content">${content}</div>
+                    <div class="message-time">${sender === 'user' ? 'You' : 'J.A.R.V.I.S.'} - ${new Date().toLocaleTimeString()}</div>
+                `;
+                
+                this.chatMessages.appendChild(messageDiv);
+                this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            }
+
+            removeLastMessage() {
+                const lastMessage = this.chatMessages.lastElementChild;
+                if (lastMessage) {
+                    lastMessage.remove();
+                }
+            }
+
+            updateSystemStatus() {
+                // Update system status with random variations
+                const statusItems = document.querySelectorAll('.status-value');
+                
+                // Power
+                const power = 95 + Math.floor(Math.random() * 6);
+                statusItems[0].textContent = `${power}%`;
+                
+                // Temperature
+                const temp = 40 + Math.floor(Math.random() * 10);
+                statusItems[1].textContent = `${temp}°C`;
+                
+                // Network
+                statusItems[2].textContent = Math.random() > 0.1 ? 'Online' : 'Offline';
+                
+                // AI Status
+                statusItems[3].textContent = Math.random() > 0.05 ? 'Active' : 'Standby';
+            }
+
+            updateScheduleDisplay() {
+                // This would fetch actual schedule data
+                console.log('Updating schedule display...');
+            }
+
+            animateVoiceWave() {
+                setInterval(() => {
+                    const scale = 0.8 + Math.random() * 0.4;
+                    this.voiceWave.style.transform = `scale(${scale})`;
+                }, 1000);
+            }
+        }
+
+        // Initialize Jarvis Interface
+        document.addEventListener('DOMContentLoaded', () => {
+            new JarvisInterface();
+        });
+    </script>
+</body>
+</html>

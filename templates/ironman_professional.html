@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS - Professional Iron Man Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', 'Segoe UI', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #0a0a0a 100%);
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;700&display=swap');
+
+        /* Advanced Animated Background */
+        .advanced-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 107, 0, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 255, 255, 0.05) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #0a0a0a 100%);
+            z-index: -3;
+            animation: bgShift 20s ease-in-out infinite;
+        }
+
+        @keyframes bgShift {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(2deg); }
+        }
+
+        /* Particle System */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #ffd700;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #ffd700;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Advanced Grid */
+        .advanced-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 215, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(rgba(255, 107, 0, 0.03) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(255, 107, 0, 0.03) 2px, transparent 2px);
+            background-size: 30px 30px, 30px 30px, 90px 90px, 90px 90px;
+            animation: gridMove 30s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(90px, 90px); }
+        }
+
+        /* Main Container */
+        .jarvis-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Professional Header */
+        .professional-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            border-bottom: 3px solid #ffd700;
+            box-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.3),
+                inset 0 0 20px rgba(255, 107, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .professional-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+            animation: headerScan 3s infinite;
+        }
+
+        @keyframes headerScan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .jarvis-logo {
+            font-family: 'Exo 2', 'Orbitron', monospace;
+            font-size: 42px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ffd700, #ff6b00, #ffd700);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            letter-spacing: 6px;
+            animation: logoGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            0% { filter: brightness(1) drop-shadow(0 0 20px rgba(255, 215, 0, 0.5)); }
+            100% { filter: brightness(1.2) drop-shadow(0 0 30px rgba(255, 107, 0, 0.8)); }
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+            box-shadow: 0 0 10px #00ff88;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1); 
+                opacity: 1; 
+            }
+            50% { 
+                transform: scale(1.3); 
+                opacity: 0.7; 
+            }
+        }
+
+        /* Main Interface */
+        .main-interface {
+            flex: 1;
+            display: flex;
+            position: relative;
+        }
+
+        /* Professional Panels */
+        .panel {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            animation: panelScan 4s infinite;
+        }
+
+        @keyframes panelScan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Left Panel */
+        .left-panel {
+            width: 320px;
+            border-right: 2px solid rgba(255, 215, 0, 0.3);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            font-family: 'Exo 2', 'Orbitron', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .panel-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, #ffd700, transparent);
+        }
+
+        .system-status {
+            margin-bottom: 35px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            background: rgba(255, 215, 0, 0.05);
+            border-left: 3px solid #ffd700;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .status-item:hover {
+            background: rgba(255, 215, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        .status-label {
+            font-size: 13px;
+            color: #a0a0a0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-value {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            color: #00ff88;
+            font-size: 14px;
+        }
+
+        /* Center Display */
+        .center-display {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .vision-display {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Advanced HUD */
+        .advanced-hud {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .hud-ring {
+            position: absolute;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+        }
+
+        .hud-ring:nth-child(1) {
+            width: 700px;
+            height: 700px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .hud-ring:nth-child(2) {
+            width: 500px;
+            height: 500px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-direction: reverse;
+            border-color: rgba(255, 107, 0, 0.3);
+        }
+
+        .hud-ring:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .hud-ring:nth-child(4) {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-color: rgba(0, 255, 255, 0.4);
+            animation-duration: 10s;
+        }
+
+        @keyframes rotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Central Logo */
+        .central-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        .central-logo-inner {
+            width: 80px;
+            height: 80px;
+            border: 3px solid #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            font-weight: 900;
+            color: #ffd700;
+            animation: innerRotate 10s linear infinite;
+        }
+
+        @keyframes innerRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Chat Display */
+        .chat-display {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 350px;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 2px solid rgba(255, 215, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 15px;
+            animation: messageSlide 0.5s ease-out;
+            position: relative;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #ff6b00, #ff8c00);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.jarvis {
+            align-self: flex-start;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #ffffff;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-content {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 20px 25px;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .professional-input {
+            flex: 1;
+            background: rgba(255, 215, 0, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            color: #ffffff;
+            padding: 18px 25px;
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            outline: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .professional-input:focus {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            box-shadow: 
+                0 0 20px rgba(255, 215, 0, 0.3),
+                inset 0 0 10px rgba(255, 215, 0, 0.1);
+        }
+
+        .professional-input::placeholder {
+            color: rgba(255, 215, 0, 0.5);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #ffd700, #ff6b00);
+            border: none;
+            color: #0a0a0a;
+            padding: 18px 35px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .send-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .send-btn:hover::before {
+            left: 100%;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .send-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Right Panel */
+        .right-panel {
+            width: 320px;
+            border-left: 2px solid rgba(255, 215, 0, 0.3);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .schedule-display {
+            margin-bottom: 35px;
+        }
+
+        .schedule-item {
+            margin-bottom: 12px;
+            padding: 15px;
+            background: rgba(255, 107, 0, 0.05);
+            border-left: 3px solid #ff6b00;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .schedule-item:hover {
+            background: rgba(255, 107, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        .schedule-time {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            color: #ff6b00;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .schedule-task {
+            font-size: 13px;
+            color: #ffffff;
+            line-height: 1.3;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .priority-high {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff4444;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+        }
+
+        .priority-medium {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .priority-critical {
+            background: rgba(255, 0, 0, 0.3);
+            color: #ff6666;
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            animation: criticalPulse 2s infinite;
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Voice Indicator */
+        .voice-indicator {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            border: 3px solid #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(26, 26, 46, 0.9);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .voice-indicator:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .voice-wave {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #ffd700, #ff6b00);
+            border-radius: 50%;
+            animation: voicePulse 2s infinite;
+        }
+
+        @keyframes voicePulse {
+            0%, 100% {
+                transform: scale(0.9);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            border-top: 3px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1400px) {
+            .left-panel, .right-panel {
+                width: 280px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .left-panel, .right-panel {
+                width: 250px;
+            }
+            
+            .jarvis-logo {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .left-panel, .right-panel {
+                display: none;
+            }
+            
+            .professional-header {
+                height: 80px;
+                padding: 0 20px;
+            }
+            
+            .jarvis-logo {
+                font-size: 24px;
+            }
+            
+            .chat-display {
+                height: 300px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(26, 26, 46, 0.3);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 215, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="advanced-bg"></div>
+    <div class="particles" id="particles"></div>
+    <div class="advanced-grid"></div>
+    
+    <div class="jarvis-container">
+        <!-- Professional Header -->
+        <div class="professional-header">
+            <div class="jarvis-logo">J.A.R.V.I.S.</div>
+            <div class="status-bar">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>Online</span>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>AI Active</span>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>Connected</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Interface -->
+        <div class="main-interface">
+            <!-- Left Panel -->
+            <div class="panel left-panel">
+                <div class="system-status">
+                    <div class="panel-title">System Status</div>
+                    <div class="status-item">
+                        <span class="status-label">Power Core</span>
+                        <span class="status-value">100%</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Core Temperature</span>
+                        <span class="status-value">42°C</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Network Status</span>
+                        <span class="status-value">Optimal</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">AI Processing</span>
+                        <span class="status-value">Active</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Security Level</span>
+                        <span class="status-value">Maximum</span>
+                    </div>
+                </div>
+
+                <div class="schedule-display">
+                    <div class="panel-title">Current Mission</div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">11:30</div>
+                        <div class="schedule-task">Internship - Deep Work Block 2</div>
+                        <span class="priority-badge priority-critical">Critical</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Display -->
+            <div class="center-display">
+                <div class="vision-display">
+                    <div class="advanced-hud">
+                        <div class="hud-ring"></div>
+                        <div class="hud-ring"></div>
+                        <div class="hud-ring"></div>
+                        <div class="hud-ring"></div>
+                    </div>
+                    
+                    <div class="central-logo">
+                        <div class="central-logo-inner">J</div>
+                    </div>
+                    
+                    <!-- Voice Indicator -->
+                    <div class="voice-indicator" id="voiceIndicator">
+                        <div class="voice-wave"></div>
+                    </div>
+                </div>
+
+                <!-- Chat Display -->
+                <div class="chat-display">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message jarvis">
+                            <div class="message-content">Welcome, sir. J.A.R.V.I.S. online and ready for your commands. All systems operational.</div>
+                            <div class="message-time">J.A.R.V.I.S. • System</div>
+                        </div>
+                    </div>
+
+                    <div class="input-area">
+                        <input type="text" class="professional-input" id="jarvisInput" placeholder="Enter your command, sir..." />
+                        <button class="send-btn" id="sendBtn">Execute</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="panel right-panel">
+                <div class="schedule-display">
+                    <div class="panel-title">Today's Agenda</div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">06:00</div>
+                        <div class="schedule-task">Wake up & fresh</div>
+                        <span class="priority-badge priority-high">High</span>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">06:20</div>
+                        <div class="schedule-task">Morning review</div>
+                        <span class="priority-badge priority-high">High</span>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">09:00</div>
+                        <div class="schedule-task">Internship - Deep Work</div>
+                        <span class="priority-badge priority-critical">Critical</span>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">13:00</div>
+                        <div class="schedule-task">Lunch break</div>
+                        <span class="priority-badge priority-medium">Medium</span>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">18:00</div>
+                        <div class="schedule-task">Exercise</div>
+                        <span class="priority-badge priority-high">High</span>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">20:30</div>
+                        <div class="schedule-task">Project / Jarvis work</div>
+                        <span class="priority-badge priority-high">High</span>
+                    </div>
+                </div>
+
+                <div class="system-status">
+                    <div class="panel-title">Performance Metrics</div>
+                    <div class="status-item">
+                        <span class="status-label">Tasks Today</span>
+                        <span class="status-value">18</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Completed</span>
+                        <span class="status-value">12</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Efficiency</span>
+                        <span class="status-value">67%</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Response Time</span>
+                        <span class="status-value">24ms</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ProfessionalJarvisInterface {
+            constructor() {
+                this.chatMessages = document.getElementById('chatMessages');
+                this.jarvisInput = document.getElementById('jarvisInput');
+                this.sendBtn = document.getElementById('sendBtn');
+                this.voiceIndicator = document.getElementById('voiceIndicator');
+                this.particles = document.getElementById('particles');
+                
+                this.init();
+            }
+
+            init() {
+                // Create particles
+                this.createParticles();
+                
+                // Event listeners
+                this.sendBtn.addEventListener('click', () => this.sendMessage());
+                this.jarvisInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.sendMessage();
+                    }
+                });
+
+                // Voice recognition
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    this.initVoiceRecognition();
+                }
+
+                // Update system status
+                this.updateSystemStatus();
+                setInterval(() => this.updateSystemStatus(), 5000);
+
+                // Voice indicator animation
+                this.animateVoiceIndicator();
+            }
+
+            createParticles() {
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 15 + 's';
+                    particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                    this.particles.appendChild(particle);
+                }
+            }
+
+            initVoiceRecognition() {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                this.recognition = new SpeechRecognition();
+                this.recognition.continuous = false;
+                this.recognition.interimResults = false;
+                this.recognition.lang = 'en-US';
+
+                this.recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    this.jarvisInput.value = transcript;
+                    this.sendMessage();
+                };
+
+                this.recognition.onerror = (event) => {
+                    console.error('Speech recognition error:', event.error);
+                };
+
+                // Voice indicator click handler
+                this.voiceIndicator.addEventListener('click', () => {
+                    this.recognition.start();
+                    this.voiceIndicator.style.background = 'rgba(255, 0, 0, 0.2)';
+                    this.voiceIndicator.style.borderColor = '#ff0000';
+                    setTimeout(() => {
+                        this.voiceIndicator.style.background = 'rgba(26, 26, 46, 0.9)';
+                        this.voiceIndicator.style.borderColor = '#ffd700';
+                    }, 3000);
+                });
+            }
+
+            async sendMessage() {
+                const message = this.jarvisInput.value.trim();
+                if (!message) return;
+
+                // Add user message
+                this.addMessage(message, 'user');
+                
+                // Clear input
+                this.jarvisInput.value = '';
+
+                // Show loading
+                this.addMessage('Processing your request, sir...', 'jarvis', true);
+
+                try {
+                    const response = await fetch('/api/ask', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ prompt: message })
+                    });
+
+                    const data = await response.json();
+                    
+                    // Remove loading message
+                    this.removeLastMessage();
+                    
+                    // Add Jarvis response
+                    this.addMessage(data.response, 'jarvis');
+                    
+                    // Update displays if needed
+                    if (message.toLowerCase().includes('schedule') || message.toLowerCase().includes('task')) {
+                        this.updateScheduleDisplay();
+                    }
+                    
+                } catch (error) {
+                    this.removeLastMessage();
+                    this.addMessage('Apologies, sir. I encountered an error. Please try again.', 'jarvis');
+                }
+            }
+
+            addMessage(content, sender, isLoading = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                
+                if (isLoading) {
+                    content += ' <span class="loading"></span>';
+                }
+                
+                messageDiv.innerHTML = `
+                    <div class="message-content">${content}</div>
+                    <div class="message-time">${sender === 'user' ? 'You' : 'J.A.R.V.I.S.'} • ${new Date().toLocaleTimeString()}</div>
+                `;
+                
+                this.chatMessages.appendChild(messageDiv);
+                this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            }
+
+            removeLastMessage() {
+                const lastMessage = this.chatMessages.lastElementChild;
+                if (lastMessage) {
+                    lastMessage.remove();
+                }
+            }
+
+            updateSystemStatus() {
+                const statusValues = document.querySelectorAll('.status-value');
+                
+                // Power
+                const power = 95 + Math.floor(Math.random() * 6);
+                statusValues[0].textContent = `${power}%`;
+                
+                // Temperature
+                const temp = 40 + Math.floor(Math.random() * 10);
+                statusValues[1].textContent = `${temp}°C`;
+                
+                // Network
+                statusValues[2].textContent = Math.random() > 0.1 ? 'Optimal' : 'Good';
+                
+                // AI Processing
+                statusValues[3].textContent = Math.random() > 0.05 ? 'Active' : 'Standby';
+                
+                // Security
+                statusValues[4].textContent = 'Maximum';
+            }
+
+            updateScheduleDisplay() {
+                // This would fetch actual schedule data
+                console.log('Updating schedule display...');
+            }
+
+            animateVoiceIndicator() {
+                setInterval(() => {
+                    const scale = 0.9 + Math.random() * 0.3;
+                    const wave = this.voiceIndicator.querySelector('.voice-wave');
+                    if (wave) {
+                        wave.style.transform = `scale(${scale})`;
+                    }
+                }, 1500);
+            }
+        }
+
+        // Initialize Professional Jarvis Interface
+        document.addEventListener('DOMContentLoaded', () => {
+            new ProfessionalJarvisInterface();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. - Professional Voice Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 107, 0, 0.05) 0%, transparent 70%),
+                linear-gradient(135deg, #000 0%, #0a0a0a 25%, #1a1a1a 50%, #0a0a0a 75%, #000 100%);
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Professional Grid Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0, 255, 255, 0.02) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.02) 2px, transparent 2px);
+            background-size: 40px 40px, 40px 40px, 120px 120px, 120px 120px;
+            animation: gridMove 30s linear infinite;
+            z-index: -2;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(120px, 120px); }
+        }
+
+        .container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Professional Header */
+        .header {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 20px 40px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(42, 42, 42, 0.85) 50%, rgba(26, 26, 26, 0.95) 100%);
+            border-bottom: 2px solid #ffd700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: 300;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            0% { 
+                filter: brightness(1) drop-shadow(0 0 20px rgba(255, 215, 0, 0.6)); 
+            }
+            100% { 
+                filter: brightness(1.2) drop-shadow(0 0 30px rgba(255, 107, 0, 0.8)); 
+            }
+        }
+
+        /* Professional Voice Section */
+        .voice-section {
+            text-align: center;
+            margin-top: -30px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .mic-button {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, #ffd700 0%, #ff6b00 50%, #ffd700 100%);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 56px;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 
+                0 0 40px rgba(255, 215, 0, 0.4),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .mic-button:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                0 0 50px rgba(255, 215, 0, 0.6),
+                inset 0 0 25px rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 215, 0, 0.6);
+        }
+
+        .mic-button:active {
+            transform: scale(0.95);
+        }
+
+        .mic-button.active {
+            animation: professionalPulse 2s ease-in-out infinite;
+            background: linear-gradient(135deg, #ff6b00 0%, #ff0000 50%, #ff6b00 100%);
+            box-shadow: 
+                0 0 50px rgba(255, 107, 0, 0.8),
+                inset 0 0 25px rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes professionalPulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 
+                    0 0 40px rgba(255, 215, 0, 0.4),
+                    inset 0 0 20px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                transform: scale(1.08);
+                box-shadow: 
+                    0 0 60px rgba(255, 107, 0, 0.8),
+                    inset 0 0 30px rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        /* Professional Status Display */
+        .status-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .status.error {
+            color: #ff6b00;
+            background: rgba(255, 107, 0, 0.1);
+            border-color: rgba(255, 107, 0, 0.5);
+            animation: errorShake 0.5s ease-in-out;
+        }
+
+        @keyframes errorShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Professional Display Panels */
+        .display-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+            max-width: 900px;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .panel {
+            flex: 1;
+            background: rgba(26, 26, 26, 0.7);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 120px;
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            animation: scanLine 3s linear infinite;
+        }
+
+        @keyframes scanLine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .panel-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .panel-content {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #ffffff;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        .transcript {
+            color: #00ffff;
+        }
+
+        .response {
+            color: #00ff88;
+        }
+
+        /* Professional Controls */
+        .controls {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .control-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 107, 0, 0.2));
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            color: #ffd700;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 107, 0, 0.3));
+        }
+
+        /* Professional Info Panel */
+        .info {
+            position: absolute;
+            top: 100px;
+            right: 20px;
+            background: rgba(26, 26, 26, 0.85);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 280px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .info h3 {
+            color: #ffd700;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info p {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #cccccc;
+            margin-bottom: 8px;
+        }
+
+        .info .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .info .status-label {
+            color: #888;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info .status-value {
+            color: #00ff88;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .mic-button {
+                width: 120px;
+                height: 120px;
+                font-size: 48px;
+            }
+            
+            .display-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .info {
+                position: static;
+                margin-top: 20px;
+                max-width: 100%;
+            }
+            
+            .controls {
+                bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Professional Header -->
+        <div class="header">
+            <h1>J.A.R.V.I.S.</h1>
+        </div>
+
+        <!-- System Status Info -->
+        <div class="info">
+            <h3>System Status</h3>
+            <div class="status-item">
+                <span class="status-label">Voice Recognition</span>
+                <span class="status-value" id="voiceStatus">Initializing</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Neural Interface</span>
+                <span class="status-value" id="neuralStatus">Online</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Response Time</span>
+                <span class="status-value" id="responseTime">--ms</span>
+            </div>
+        </div>
+
+        <!-- Professional Voice Section -->
+        <div class="voice-section">
+            <button class="mic-button" id="micButton">🎤</button>
+            <div class="status-container">
+                <div class="status" id="status">Initializing Systems</div>
+            </div>
+        </div>
+
+        <!-- Professional Display Panels -->
+        <div class="display-container">
+            <div class="panel">
+                <div class="panel-title">Voice Transcript</div>
+                <div class="panel-content transcript" id="transcript">Awaiting voice input...</div>
+            </div>
+            <div class="panel">
+                <div class="panel-title">Jarvis Response</div>
+                <div class="panel-content response" id="response">Processing your request...</div>
+            </div>
+        </div>
+
+        <!-- Professional Controls -->
+        <div class="controls">
+            <button class="control-btn" onclick="testAPI()">Test System</button>
+            <button class="control-btn" onclick="clearAll()">Clear</button>
+            <button class="control-btn" onclick="goBack()">Main Interface</button>
+        </div>
+    </div>
+
+    <script>
+        let recognition = null;
+        let isListening = false;
+        let synthesis = window.speechSynthesis;
+        let commandHistory = [];
+        let responseStartTime = 0;
+
+        // Initialize voice recognition
+        function initVoiceRecognition() {
+            console.log('🎤 Initializing J.A.R.V.I.S. Voice Recognition...');
+            
+            // Update status displays
+            updateStatusDisplay('voiceStatus', 'Initializing');
+            updateStatusDisplay('neuralStatus', 'Online');
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (!SpeechRecognition) {
+                console.error('❌ Speech recognition not supported');
+                updateStatusDisplay('voiceStatus', 'Not Supported');
+                updateStatusDisplay('status', 'Voice recognition not available');
+                return false;
+            }
+
+            try {
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US';
+                recognition.maxAlternatives = 1;
+
+                recognition.onstart = () => {
+                    console.log('🎤 Voice recognition started');
+                    isListening = true;
+                    updateStatusDisplay('voiceStatus', 'Active');
+                    updateStatusDisplay('status', 'Listening...');
+                    document.getElementById('micButton').classList.add('active');
+                };
+
+                recognition.onresult = (event) => {
+                    console.log('🎤 Voice recognition result:', event);
+                    const transcript = Array.from(event.results)
+                        .map(result => result[0].transcript)
+                        .join('');
+                    
+                    document.getElementById('transcript').textContent = transcript;
+                    
+                    if (event.results[0].isFinal) {
+                        console.log('✅ Final transcript:', transcript);
+                        processCommand(transcript);
+                    }
+                };
+
+                recognition.onerror = (event) => {
+                    console.error('❌ Voice recognition error:', event.error);
+                    isListening = false;
+                    updateStatusDisplay('voiceStatus', 'Error');
+                    updateStatusDisplay('status', `Error: ${event.error}`, true);
+                    document.getElementById('micButton').classList.remove('active');
+                    
+                    // Speak error message
+                    speakText(`Apologies, sir. Voice recognition error: ${event.error}. Please try again.`);
+                    
+                    setTimeout(() => {
+                        updateStatusDisplay('voiceStatus', 'Ready');
+                        updateStatusDisplay('status', 'Click to activate');
+                    }, 3000);
+                };
+
+                recognition.onend = () => {
+                    console.log('🔇 Voice recognition ended');
+                    isListening = false;
+                    document.getElementById('micButton').classList.remove('active');
+                };
+
+                recognition.onspeechstart = () => {
+                    console.log('🗣️ Speech detected');
+                };
+
+                recognition.onspeechend = () => {
+                    console.log('🔇 Speech ended');
+                };
+
+                console.log('✅ Voice recognition initialized successfully');
+                updateStatusDisplay('voiceStatus', 'Ready');
+                updateStatusDisplay('status', 'Click to activate');
+                return true;
+
+            } catch (error) {
+                console.error('❌ Error initializing voice recognition:', error);
+                updateStatusDisplay('voiceStatus', 'Error');
+                updateStatusDisplay('status', 'Failed to initialize', true);
+                return false;
+            }
+        }
+
+        // Toggle voice recognition
+        function toggleVoiceRecognition() {
+            console.log('🎤 Toggle voice recognition called');
+            
+            if (!recognition) {
+                if (!initVoiceRecognition()) {
+                    return;
+                }
+            }
+
+            if (isListening) {
+                console.log('🔇 Stopping voice recognition');
+                recognition.stop();
+            } else {
+                console.log('🎤 Starting voice recognition');
+                try {
+                    recognition.start();
+                } catch (error) {
+                    console.error('❌ Error starting recognition:', error);
+                    updateStatusDisplay('status', 'Failed to start', true);
+                }
+            }
+        }
+
+        // Process voice command
+        async function processCommand(command) {
+            console.log('🧠 Processing command:', command);
+            responseStartTime = Date.now();
+            
+            updateStatusDisplay('status', 'Processing...');
+            
+            // Add to history
+            commandHistory.push({
+                command: command,
+                timestamp: new Date().toLocaleTimeString()
+            });
+            
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: command })
+                });
+
+                const data = await response.json();
+                
+                // Calculate response time
+                const responseTime = Date.now() - responseStartTime;
+                updateStatusDisplay('responseTime', `${responseTime}ms`);
+                
+                document.getElementById('response').textContent = data.response;
+                updateStatusDisplay('status', 'Ready');
+                
+                // Speak the response professionally
+                speakText(data.response);
+                
+            } catch (error) {
+                console.error('❌ Error processing command:', error);
+                document.getElementById('response').textContent = 'Error processing command';
+                updateStatusDisplay('status', 'Error', true);
+                
+                // Speak error message
+                speakText('Apologies, sir. I encountered an error processing your command. Please try again.');
+            }
+        }
+
+        // Speak text professionally
+        function speakText(text) {
+            if (!synthesis) {
+                console.log('⚠️ Speech synthesis not supported');
+                return;
+            }
+
+            // Cancel any ongoing speech
+            synthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            // Professional voice settings
+            utterance.rate = 0.85;  // Slightly slower for professional delivery
+            utterance.pitch = 0.75;   // Deeper pitch for male voice
+            utterance.volume = 0.9;    // Clear volume
+            utterance.lang = 'en-US';
+            
+            // Try to find professional male voice
+            const voices = synthesis.getVoices();
+            const professionalVoice = voices.find(voice => 
+                voice.name.includes('Male') || 
+                voice.name.includes('David') || 
+                voice.name.includes('Alex') ||
+                voice.name.includes('James') ||
+                voice.name.includes('Microsoft Guy') ||
+                voice.lang.includes('en-US')
+            ) || voices[0];
+            
+            if (professionalVoice) {
+                utterance.voice = professionalVoice;
+                console.log('🎤 Using professional voice:', professionalVoice.name);
+            }
+            
+            utterance.onstart = () => {
+                console.log('🔊 Jarvis speaking started');
+            };
+            
+            utterance.onend = () => {
+                console.log('🔇 Jarvis speaking ended');
+            };
+            
+            synthesis.speak(utterance);
+        }
+
+        // Update status displays
+        function updateStatusDisplay(elementId, value, isError = false) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = value;
+                
+                if (isError) {
+                    element.style.color = '#ff6b00';
+                    element.parentElement.classList.add('error');
+                } else {
+                    element.style.color = '#00ff88';
+                    element.parentElement.classList.remove('error');
+                }
+            }
+        }
+
+        // Test API functionality
+        async function testAPI() {
+            console.log('🧪 Testing J.A.R.V.I.S. API...');
+            updateStatusDisplay('status', 'Testing System...');
+            
+            try {
+                const startTime = Date.now();
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: 'JARVIS, system status check' })
+                });
+
+                const responseTime = Date.now() - startTime;
+                updateStatusDisplay('responseTime', `${responseTime}ms`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ API test successful:', data.response);
+                    document.getElementById('response').textContent = data.response;
+                    updateStatusDisplay('status', 'System Online');
+                    updateStatusDisplay('voiceStatus', 'Operational');
+                    
+                    // Speak the response
+                    speakText(data.response);
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+            } catch (error) {
+                console.error('❌ API test failed:', error);
+                document.getElementById('response').textContent = 'API test failed';
+                updateStatusDisplay('status', 'API Error', true);
+                
+                // Speak error message
+                speakText('Apologies, sir. System test failed. Please check server connection.');
+            }
+        }
+
+        // Clear all displays
+        function clearAll() {
+            console.log('🧹 Clearing all displays');
+            
+            document.getElementById('transcript').textContent = 'Awaiting voice input...';
+            document.getElementById('response').textContent = 'Processing your request...';
+            updateStatusDisplay('status', 'Ready');
+            updateStatusDisplay('responseTime', '--ms');
+            
+            // Clear history
+            commandHistory = [];
+            
+            // Speak confirmation
+            speakText('All displays cleared, sir. Ready for your next command.');
+        }
+
+        // Go back to main interface
+        function goBack() {
+            console.log('🔙 Navigating to main interface');
+            window.location.href = '/helmet';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 J.A.R.V.I.S. Professional Voice Interface Loading...');
+            
+            const micButton = document.getElementById('micButton');
+            
+            // Add professional click handlers
+            micButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('🎤 Microphone button clicked');
+                toggleVoiceRecognition();
+            });
+            
+            // Add visual feedback
+            micButton.addEventListener('mousedown', () => {
+                micButton.style.transform = 'scale(0.95)';
+            });
+            
+            micButton.addEventListener('mouseup', () => {
+                micButton.style.transform = 'scale(1)';
+            });
+            
+            micButton.addEventListener('mouseleave', () => {
+                micButton.style.transform = 'scale(1)';
+            });
+            
+            // Add keyboard shortcut (spacebar)
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                    toggleVoiceRecognition();
+                }
+            });
+            
+            // Initialize voice recognition
+            if (initVoiceRecognition()) {
+                console.log('✅ J.A.R.V.I.S. Voice Interface Ready');
+                speakText('J.A.R.V.I.S. online and ready, sir. Voice recognition activated. Click the microphone button or press spacebar to begin.');
+            }
+        });
+    </script>
+</body>
+</html>

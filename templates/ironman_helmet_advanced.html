@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS - Advanced Iron Man Helmet Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', 'Segoe UI', monospace;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+        /* Iron Man Helmet Background */
+        .helmet-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 107, 0, 0.05) 0%, transparent 70%),
+                linear-gradient(135deg, #000 0%, #0a0a0a 25%, #1a1a1a 50%, #0a0a0a 75%, #000 100%);
+            z-index: -3;
+            animation: helmetGlow 20s ease-in-out infinite;
+        }
+
+        @keyframes helmetGlow {
+            0%, 100% { filter: brightness(1) contrast(1); }
+            50% { filter: brightness(1.1) contrast(1.05); }
+        }
+
+        /* Advanced Particle System */
+        .particle-system {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        .helmet-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #ffd700;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ffd700;
+            animation: particleFloat 20s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(80vh) translateX(20px) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(-20vh) translateX(-20px) scale(1);
+            }
+            100% {
+                transform: translateY(-100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Advanced Grid */
+        .helmet-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0, 255, 255, 0.02) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.02) 2px, transparent 2px);
+            background-size: 40px 40px, 40px 40px, 120px 120px, 120px 120px;
+            animation: gridShift 30s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes gridShift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(120px, 120px); }
+        }
+
+        /* Main Container */
+        .helmet-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Iron Man Helmet Top Bar */
+        .helmet-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 25%, #1a1a1a 50%, #0f0f0f 75%, #1a1a1a 100%);
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            border-bottom: 2px solid #ffd700;
+            box-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.4),
+                inset 0 0 20px rgba(255, 107, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .helmet-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+            animation: headerScan 2.5s infinite;
+        }
+
+        @keyframes headerScan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .jarvis-logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 36px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ffd700, #ff6b00, #ffd700);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+            letter-spacing: 5px;
+            animation: logoGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            0% { filter: brightness(1) drop-shadow(0 0 20px rgba(255, 215, 0, 0.6)); }
+            100% { filter: brightness(1.3) drop-shadow(0 0 40px rgba(255, 107, 0, 0.8)); }
+        }
+
+        .helmet-status {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .status-module {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff88;
+            box-shadow: 0 0 15px #00ff88;
+            animation: statusPulse 1.2s infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                opacity: 1; 
+            }
+            50% { 
+                transform: scale(1.4); 
+                opacity: 0.7; 
+            }
+        }
+
+        /* Main Interface */
+        .helmet-interface {
+            flex: 1;
+            display: flex;
+            position: relative;
+        }
+
+        /* Face Detection Panel */
+        .face-panel {
+            width: 350px;
+            background: rgba(26, 26, 26, 0.85);
+            backdrop-filter: blur(10px);
+            border-right: 2px solid rgba(255, 215, 0, 0.3);
+            padding: 25px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .face-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            animation: panelScan 4s infinite;
+        }
+
+        @keyframes panelScan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .section-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, #ffd700, transparent);
+        }
+
+        /* Face Detection Display */
+        .face-detection {
+            margin-bottom: 30px;
+        }
+
+        .face-video-container {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .face-video-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 215, 0, 0.1) 50%, transparent 70%);
+            animation: faceScan 3s infinite;
+        }
+
+        @keyframes faceScan {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .face-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            border-radius: 15px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #00ff88;
+        }
+
+        .face-placeholder {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            color: #888;
+            text-align: center;
+        }
+
+        .face-icon {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .face-icon-inner {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #ffd700;
+            animation: faceIconRotate 8s linear infinite;
+        }
+
+        @keyframes faceIconRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Biometric Data */
+        .biometric-data {
+            margin-top: 20px;
+        }
+
+        .biometric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            background: rgba(255, 215, 0, 0.05);
+            border-left: 3px solid #ffd700;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .biometric-item:hover {
+            background: rgba(255, 215, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        .biometric-label {
+            font-size: 12px;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .biometric-value {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            color: #00ff88;
+            font-size: 14px;
+        }
+
+        /* Center Display */
+        .helmet-center {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .helmet-vision {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Advanced HUD */
+        .helmet-hud {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .hud-ring {
+            position: absolute;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 50%;
+            animation: hudRotate 25s linear infinite;
+        }
+
+        .hud-ring:nth-child(1) {
+            width: 800px;
+            height: 800px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .hud-ring:nth-child(2) {
+            width: 600px;
+            height: 600px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-direction: reverse;
+            border-color: rgba(255, 107, 0, 0.3);
+        }
+
+        .hud-ring:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .hud-ring:nth-child(4) {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-color: rgba(0, 255, 255, 0.4);
+            animation-duration: 15s;
+        }
+
+        @keyframes hudRotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Central Helmet Display */
+        .helmet-central {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: centralPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes centralPulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.15);
+                opacity: 1;
+            }
+        }
+
+        .helmet-central-inner {
+            width: 100px;
+            height: 100px;
+            border: 3px solid #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 32px;
+            font-weight: 900;
+            color: #ffd700;
+            animation: innerRotate 12s linear infinite;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+
+        @keyframes innerRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Professional Conversation Panel */
+        .conversation-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 300px;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 2px solid rgba(255, 215, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .conversation-header {
+            padding: 15px 25px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .conversation-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .conversation-status {
+            font-size: 11px;
+            color: #00ff88;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .conversation-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .conversation-message {
+            max-width: 75%;
+            padding: 12px 18px;
+            border-radius: 15px;
+            animation: messageSlide 0.4s ease-out;
+            position: relative;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #ff6b00, #ff8c00);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-jarvis {
+            align-self: flex-start;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #ffffff;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-content {
+            margin-bottom: 6px;
+            line-height: 1.4;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 13px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Voice Control */
+        .voice-control {
+            padding: 15px 25px;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .voice-button {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ffd700, #ff6b00);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .voice-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .voice-button:hover::before {
+            left: 100%;
+        }
+
+        .voice-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+        }
+
+        .voice-button.active {
+            animation: voiceActive 1.5s infinite;
+        }
+
+        @keyframes voiceActive {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            }
+            50% {
+                transform: scale(1.2);
+                box-shadow: 0 0 40px rgba(255, 107, 0, 0.8);
+            }
+        }
+
+        .voice-icon {
+            width: 25px;
+            height: 25px;
+            fill: white;
+        }
+
+        .voice-status {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .voice-status-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .voice-transcript {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 12px;
+            color: #aaa;
+            font-style: italic;
+        }
+
+        /* Right Panel */
+        .helmet-right {
+            width: 350px;
+            background: rgba(26, 26, 26, 0.85);
+            backdrop-filter: blur(10px);
+            border-left: 2px solid rgba(255, 215, 0, 0.3);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        /* System Analytics */
+        .system-analytics {
+            margin-bottom: 30px;
+        }
+
+        .analytics-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px 15px;
+            background: rgba(0, 255, 255, 0.05);
+            border-left: 3px solid #00ffff;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .analytics-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .analytics-label {
+            font-size: 12px;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .analytics-value {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            color: #00ffff;
+            font-size: 14px;
+        }
+
+        /* Mission Status */
+        .mission-status {
+            margin-bottom: 30px;
+        }
+
+        .mission-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 107, 0, 0.05);
+            border-left: 3px solid #ff6b00;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .mission-item:hover {
+            background: rgba(255, 107, 0, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .mission-time {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            color: #ff6b00;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .mission-task {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 13px;
+            color: #ffffff;
+            line-height: 1.3;
+        }
+
+        .mission-priority {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        .priority-critical {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff6666;
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            animation: criticalPulse 2s infinite;
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-top: 2px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1400px) {
+            .face-panel, .helmet-right {
+                width: 300px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .face-panel, .helmet-right {
+                width: 250px;
+            }
+            
+            .jarvis-logo {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .face-panel, .helmet-right {
+                display: none;
+            }
+            
+            .helmet-header {
+                height: 60px;
+                padding: 0 20px;
+            }
+            
+            .jarvis-logo {
+                font-size: 20px;
+            }
+            
+            .conversation-panel {
+                height: 250px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(26, 26, 26, 0.3);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 215, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="helmet-background"></div>
+    <div class="particle-system" id="particleSystem"></div>
+    <div class="helmet-grid"></div>
+    
+    <div class="helmet-container">
+        <!-- Iron Man Helmet Header -->
+        <div class="helmet-header">
+            <div class="jarvis-logo">J.A.R.V.I.S.</div>
+            <div class="helmet-status">
+                <div class="status-module">
+                    <div class="status-indicator"></div>
+                    <span>Online</span>
+                </div>
+                <div class="status-module">
+                    <div class="status-indicator"></div>
+                    <span>AI Active</span>
+                </div>
+                <div class="status-module">
+                    <div class="status-indicator"></div>
+                    <span>Connected</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Interface -->
+        <div class="helmet-interface">
+            <!-- Face Detection Panel -->
+            <div class="face-panel">
+                <div class="face-detection">
+                    <div class="section-title">Face Detection</div>
+                    <div class="face-video-container">
+                        <div class="face-status">Scanning...</div>
+                        <div class="face-icon">
+                            <div class="face-icon-inner">👤</div>
+                        </div>
+                        <div class="face-placeholder">Face Recognition Active</div>
+                    </div>
+                </div>
+
+                <div class="biometric-data">
+                    <div class="section-title">Biometric Data</div>
+                    <div class="biometric-item">
+                        <span class="biometric-label">Face ID</span>
+                        <span class="biometric-value">Authenticated</span>
+                    </div>
+                    <div class="biometric-item">
+                        <span class="biometric-label">Voice Print</span>
+                        <span class="biometric-value">Matched</span>
+                    </div>
+                    <div class="biometric-item">
+                        <span class="biometric-label">Heart Rate</span>
+                        <span class="biometric-value">72 BPM</span>
+                    </div>
+                    <div class="biometric-item">
+                        <span class="biometric-label">Stress Level</span>
+                        <span class="biometric-value">Low</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Display -->
+            <div class="helmet-center">
+                <div class="helmet-vision">
+                    <div class="helmet-hud">
+                        <div class="hud-ring"></div>
+                        <div class="hud-ring"></div>
+                        <div class="hud-ring"></div>
+                        <div class="hud-ring"></div>
+                    </div>
+                    
+                    <div class="helmet-central">
+                        <div class="helmet-central-inner">J</div>
+                    </div>
+                </div>
+
+                <!-- Professional Conversation Panel -->
+                <div class="conversation-panel">
+                    <div class="conversation-header">
+                        <div class="conversation-title">Neural Interface</div>
+                        <div class="conversation-status">Active</div>
+                    </div>
+                    
+                    <div class="conversation-messages" id="conversationMessages">
+                        <div class="conversation-message message-jarvis">
+                            <div class="message-content">Welcome, sir. J.A.R.V.I.S. helmet systems online. Face recognition and biometric scanners activated. All neural networks operational.</div>
+                            <div class="message-time">J.A.R.V.I.S. • System</div>
+                        </div>
+                    </div>
+
+                    <div class="voice-control">
+                        <button class="voice-button" id="voiceButton">
+                            <svg class="voice-icon" viewBox="0 0 24 24">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
+                        </button>
+                        <div class="voice-status">
+                            <div class="voice-status-text" id="voiceStatus">Ready</div>
+                            <div class="voice-transcript" id="voiceTranscript">Click to activate voice command</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="helmet-right">
+                <div class="system-analytics">
+                    <div class="section-title">System Analytics</div>
+                    <div class="analytics-item">
+                        <span class="analytics-label">Neural Processing</span>
+                        <span class="analytics-value">98.5%</span>
+                    </div>
+                    <div class="analytics-item">
+                        <span class="analytics-label">Response Time</span>
+                        <span class="analytics-value">18ms</span>
+                    </div>
+                    <div class="analytics-item">
+                        <span class="analytics-label">Accuracy</span>
+                        <span class="analytics-value">99.2%</span>
+                    </div>
+                    <div class="analytics-item">
+                        <span class="analytics-label">Uptime</span>
+                        <span class="analytics-value">99.9%</span>
+                    </div>
+                </div>
+
+                <div class="mission-status">
+                    <div class="section-title">Current Mission</div>
+                    <div class="mission-item">
+                        <div class="mission-time">11:30</div>
+                        <div class="mission-task">Internship - Deep Work Block 2</div>
+                        <div class="mission-priority priority-critical">Critical Priority</div>
+                    </div>
+                    <div class="mission-item">
+                        <div class="mission-time">13:00</div>
+                        <div class="mission-task">Lunch Break & Recovery</div>
+                    </div>
+                    <div class="mission-item">
+                        <div class="mission-time">14:00</div>
+                        <div class="mission-task">Internship - Deep Work Block 3</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class AdvancedHelmetInterface {
+            constructor() {
+                this.conversationMessages = document.getElementById('conversationMessages');
+                this.voiceButton = document.getElementById('voiceButton');
+                this.voiceStatus = document.getElementById('voiceStatus');
+                this.voiceTranscript = document.getElementById('voiceTranscript');
+                this.particleSystem = document.getElementById('particleSystem');
+                
+                // Initialize speech synthesis
+                this.speechSynthesis = window.speechSynthesis;
+                this.speechVoice = null;
+                this.initSpeechVoices();
+                
+                this.init();
+            }
+
+            init() {
+                // Create advanced particle system
+                this.createAdvancedParticles();
+                
+                // Initialize face detection simulation
+                this.initFaceDetection();
+                
+                // Initialize speech voices first
+                this.initSpeechVoices();
+                
+                // Initialize voice recognition
+                this.initVoiceRecognition();
+                
+                // Voice button click handler with better error handling
+                if (this.voiceButton) {
+                    this.voiceButton.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Voice button clicked');
+                        this.toggleVoiceRecognition();
+                    });
+                    
+                    // Add visual feedback for button
+                    this.voiceButton.addEventListener('mousedown', () => {
+                        this.voiceButton.style.transform = 'scale(0.95)';
+                    });
+                    
+                    this.voiceButton.addEventListener('mouseup', () => {
+                        this.voiceButton.style.transform = 'scale(1)';
+                    });
+                    
+                    this.voiceButton.addEventListener('mouseleave', () => {
+                        this.voiceButton.style.transform = 'scale(1)';
+                    });
+                } else {
+                    console.error('Voice button not found!');
+                }
+                
+                // Update biometric data
+                this.updateBiometricData();
+                setInterval(() => this.updateBiometricData(), 3000);
+                
+                // Update system analytics
+                this.updateSystemAnalytics();
+                setInterval(() => this.updateSystemAnalytics(), 4000);
+                
+                // Update mission status
+                this.updateMissionStatus();
+                setInterval(() => this.updateMissionStatus(), 5000);
+            }
+
+            initSpeechVoices() {
+                // Wait for voices to be loaded
+                if (this.speechSynthesis.onvoiceschanged !== undefined) {
+                    this.speechSynthesis.onvoiceschanged = () => {
+                        const voices = this.speechSynthesis.getVoices();
+                        // Prefer professional male voice
+                        this.speechVoice = voices.find(voice => 
+                            voice.name.includes('Male') || 
+                            voice.name.includes('David') || 
+                            voice.name.includes('Alex') ||
+                            voice.name.includes('James') ||
+                            voice.lang.includes('en-US')
+                        ) || voices[0];
+                    };
+                }
+                
+                // Initial voice loading
+                const voices = this.speechSynthesis.getVoices();
+                if (voices.length > 0) {
+                    this.speechVoice = voices.find(voice => 
+                        voice.name.includes('Male') || 
+                        voice.name.includes('David') || 
+                        voice.name.includes('Alex') ||
+                        voice.name.includes('James') ||
+                        voice.lang.includes('en-US')
+                    ) || voices[0];
+                }
+            }
+
+            speakProfessionally(text, priority = 'normal') {
+                if (!this.speechSynthesis) {
+                    console.log('Speech synthesis not supported');
+                    return;
+                }
+
+                // Cancel any ongoing speech
+                this.speechSynthesis.cancel();
+
+                // Create utterance
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // Set professional voice
+                if (this.speechVoice) {
+                    utterance.voice = this.speechVoice;
+                }
+                
+                // Professional speech settings
+                utterance.rate = 0.9;  // Slightly slower for professional delivery
+                utterance.pitch = 0.8;  // Deeper pitch for male voice
+                utterance.volume = 0.9;  // Clear volume
+                utterance.lang = 'en-US';
+                
+                // Add professional pauses for important content
+                if (priority === 'high') {
+                    utterance.rate = 0.85;
+                }
+
+                // Handle speech events
+                utterance.onstart = () => {
+                    this.updateSpeechStatus('Speaking...');
+                };
+
+                utterance.onend = () => {
+                    this.updateSpeechStatus('Ready');
+                };
+
+                utterance.onerror = (event) => {
+                    console.error('Speech synthesis error:', event.error);
+                    this.updateSpeechStatus('Speech Error');
+                };
+
+                // Speak the text
+                this.speechSynthesis.speak(utterance);
+            }
+
+            updateSpeechStatus(status) {
+                // Update voice status to show when Jarvis is speaking
+                const speechStatusElement = document.querySelector('.conversation-status');
+                if (speechStatusElement) {
+                    speechStatusElement.textContent = status;
+                }
+            }
+
+            createAdvancedParticles() {
+                for (let i = 0; i < 80; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'helmet-particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 20 + 's';
+                    particle.style.animationDuration = (15 + Math.random() * 15) + 's';
+                    
+                    // Random colors for particles
+                    const colors = ['#ffd700', '#ff6b00', '#00ffff', '#00ff88'];
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.background = randomColor;
+                    particle.style.boxShadow = `0 0 12px ${randomColor}`;
+                    
+                    this.particleSystem.appendChild(particle);
+                }
+            }
+
+            initVoiceRecognition() {
+                console.log('Initializing voice recognition...');
+                
+                // Check if speech recognition is supported
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                
+                if (!SpeechRecognition) {
+                    console.error('Speech recognition not supported');
+                    this.voiceStatus.textContent = 'Not Supported';
+                    this.voiceTranscript.textContent = 'Voice recognition not available in this browser';
+                    if (this.voiceButton) {
+                        this.voiceButton.style.opacity = '0.5';
+                        this.voiceButton.style.cursor = 'not-allowed';
+                    }
+                    return;
+                }
+                
+                try {
+                    this.recognition = new SpeechRecognition();
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = true;
+                    this.recognition.lang = 'en-US';
+                    this.recognition.maxAlternatives = 1;
+
+                    this.recognition.onstart = () => {
+                        console.log('Voice recognition started');
+                        this.voiceStatus.textContent = 'Listening...';
+                        if (this.voiceButton) {
+                            this.voiceButton.classList.add('active');
+                        }
+                        this.voiceTranscript.textContent = 'Voice command activated...';
+                        this.addConversationMessage('Voice recognition system activated', 'jarvis');
+                    };
+
+                    this.recognition.onresult = (event) => {
+                        console.log('Voice recognition result:', event);
+                        const transcript = Array.from(event.results)
+                            .map(result => result[0].transcript)
+                            .join('');
+                        
+                        this.voiceTranscript.textContent = transcript;
+                        console.log('Transcript:', transcript);
+                        
+                        if (event.results[0].isFinal) {
+                            console.log('Final result, processing command...');
+                            this.processVoiceCommand(transcript);
+                        }
+                    };
+
+                    this.recognition.onerror = (event) => {
+                        console.error('Speech recognition error:', event.error);
+                        this.voiceStatus.textContent = 'Error';
+                        this.voiceTranscript.textContent = `Voice recognition error: ${event.error}`;
+                        if (this.voiceButton) {
+                            this.voiceButton.classList.remove('active');
+                        }
+                        this.addConversationMessage(`Voice recognition error: ${event.error}`, 'jarvis');
+                        
+                        setTimeout(() => {
+                            this.voiceStatus.textContent = 'Ready';
+                            this.voiceTranscript.textContent = 'Click to activate voice command';
+                        }, 2000);
+                    };
+
+                    this.recognition.onend = () => {
+                        console.log('Voice recognition ended');
+                        this.voiceStatus.textContent = 'Processing...';
+                        if (this.voiceButton) {
+                            this.voiceButton.classList.remove('active');
+                        }
+                    };
+
+                    this.recognition.onspeechstart = () => {
+                        console.log('Speech detected');
+                    };
+
+                    this.recognition.onspeechend = () => {
+                        console.log('Speech ended');
+                    };
+
+                    console.log('Voice recognition initialized successfully');
+                    
+                } catch (error) {
+                    console.error('Error initializing voice recognition:', error);
+                    this.voiceStatus.textContent = 'Error';
+                    this.voiceTranscript.textContent = 'Failed to initialize voice recognition';
+                }
+            }
+
+            toggleVoiceRecognition() {
+                console.log('Toggle voice recognition called');
+                if (!this.recognition) {
+                    this.addConversationMessage('Voice recognition not supported. Please use a modern browser like Chrome.', 'jarvis');
+                    return;
+                }
+
+                if (this.voiceStatus.textContent === 'Listening...') {
+                    console.log('Stopping voice recognition');
+                    this.recognition.stop();
+                } else {
+                    console.log('Starting voice recognition');
+                    this.recognition.start();
+                }
+            }
+
+            async processVoiceCommand(command) {
+                this.voiceStatus.textContent = 'Processing...';
+                this.addConversationMessage(`Command received: "${command}"`, 'user');
+                
+                try {
+                    const response = await fetch('/api/ask', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ prompt: command })
+                    });
+
+                    const data = await response.json();
+                    
+                    // Add Jarvis response to conversation
+                    this.addConversationMessage(data.response, 'jarvis');
+                    
+                    // SPEAK THE RESPONSE PROFESSIONALLY
+                    this.speakProfessionally(data.response, 'normal');
+                    
+                    this.addConversationMessage('Voice response delivered', 'jarvis');
+                    
+                } catch (error) {
+                    console.error('Error processing command:', error);
+                    const errorMessage = 'Apologies, sir. I encountered an error processing your command. Please try again.';
+                    this.addConversationMessage(errorMessage, 'jarvis');
+                    
+                    // Speak error message
+                    this.speakProfessionally(errorMessage, 'high');
+                }
+                
+                // Reset voice status
+                setTimeout(() => {
+                    this.voiceStatus.textContent = 'Ready';
+                    this.voiceTranscript.textContent = 'Click to activate voice command';
+                }, 2000);
+            }
+
+            addConversationMessage(content, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `conversation-message message-${sender}`;
+                
+                messageDiv.innerHTML = `
+                    <div class="message-content">${content}</div>
+                    <div class="message-time">${sender === 'user' ? 'You' : 'J.A.R.V.I.S.'} • ${new Date().toLocaleTimeString()}</div>
+                `;
+                
+                this.conversationMessages.appendChild(messageDiv);
+                this.conversationMessages.scrollTop = this.conversationMessages.scrollHeight;
+            }
+
+            updateBiometricData() {
+                const biometricValues = document.querySelectorAll('.biometric-value');
+                
+                // Heart rate variation
+                const heartRate = 68 + Math.floor(Math.random() * 12);
+                biometricValues[2].textContent = `${heartRate} BPM`;
+                
+                // Stress level
+                const stressLevels = ['Low', 'Normal', 'Moderate', 'Low'];
+                const stressLevel = stressLevels[Math.floor(Math.random() * stressLevels.length)];
+                biometricValues[3].textContent = stressLevel;
+            }
+
+            updateSystemAnalytics() {
+                const analyticsValues = document.querySelectorAll('.analytics-value');
+                
+                // Neural processing
+                const neuralProcessing = (96 + Math.random() * 3).toFixed(1);
+                analyticsValues[0].textContent = `${neuralProcessing}%`;
+                
+                // Response time
+                const responseTime = 15 + Math.floor(Math.random() * 10);
+                analyticsValues[1].textContent = `${responseTime}ms`;
+                
+                // Accuracy
+                const accuracy = (98 + Math.random() * 1.5).toFixed(1);
+                analyticsValues[2].textContent = `${accuracy}%`;
+                
+                // Uptime
+                analyticsValues[3].textContent = '99.9%';
+            }
+
+            updateMissionStatus() {
+                // This would fetch actual mission data from schedule
+                const missionTasks = document.querySelectorAll('.mission-task');
+                const currentTime = new Date().getHours();
+                
+                // Update current mission based on time
+                if (currentTime >= 11 && currentTime < 13) {
+                    missionTasks[0].textContent = 'Internship - Deep Work Block 2';
+                } else if (currentTime >= 13 && currentTime < 14) {
+                    missionTasks[0].textContent = 'Lunch Break & Recovery';
+                } else if (currentTime >= 14 && currentTime < 16) {
+                    missionTasks[0].textContent = 'Internship - Deep Work Block 3';
+                }
+            }
+        }
+
+        // Global function for close button
+        function closeResponse() {
+            document.getElementById('responseOverlay').classList.remove('show');
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            new AdvancedHelmetInterface();
+        });
+    </script>
+</body>
+</html>
